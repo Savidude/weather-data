@@ -1,2 +1,301 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!-- Meta, title, CSS, favicons, etc. -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+
+        <title>Weather Data</title>
+
+        <!-- Bootstrap -->
+        <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <!-- bootstrap-daterangepicker -->
+        <link href="/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+         <!--Custom Theme Style-->
+        <link href="/stylesheets/style.css" rel="stylesheet">
+    </head>
+
+    <body class="nav-md">
+        <div class="container body">
+            <div class="main_container">
+                <div class="col-md-3 left_col">
+                    <div class="left_col scroll-view">
+                        <div class="navbar nav_title" style="border: 0;">
+                            <a href="index.html" class="site_title"><i class="fa fa-cloud"></i> <span>Weather Data</span></a>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <!-- menu profile quick info -->
+                        <div class="profile clearfix">
+                            <div class="profile_pic">
+                                <img src="images/guest.png" alt="..." class="img-circle profile_img">
+                            </div>
+                            <div class="profile_info">
+                                <span>Welcome,</span>
+                                <h2>Guest</h2>
+                            </div>
+                        </div>
+                        <!-- /menu profile quick info -->
+
+                        <br />
+
+                        <!-- sidebar menu -->
+                        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                            <div class="menu_section">
+                                <h3>General</h3>
+                                <ul class="nav side-menu">
+                                    <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="index.html">Dashboard</a></li>
+                                            <li><a href="index2.html">Dashboard2</a></li>
+                                            <li><a href="index3.html">Dashboard3</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /sidebar menu -->
+
+                        <!-- /menu footer buttons -->
+                        <div class="sidebar-footer hidden-small">
+                            <a data-toggle="tooltip" data-placement="top" title="Settings">
+                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Lock">
+                                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                        <!-- /menu footer buttons -->
+                    </div>
+                </div>
+
+                <!-- top navigation -->
+                <div class="top_nav">
+                    <div class="nav_menu">
+                        <nav>
+                            <div class="nav toggle">
+                                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                            </div>
+
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="">
+                                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <img src="images/guest.png" alt="">Guest
+                                        <span class=" fa fa-angle-down"></span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                        <li><a href="javascript:;"> Profile</a></li>
+                                        <li>
+                                            <a href="javascript:;">
+                                                <span class="badge bg-red pull-right">50%</span>
+                                                <span>Settings</span>
+                                            </a>
+                                        </li>
+                                        <li><a href="javascript:;">Help</a></li>
+                                        <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log In</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <!-- /top navigation -->
+
+                <!-- page content -->
+                <div class="right_col" role="main">
+                    <div class="">
+                        <div class="row top_tiles">
+                            <div class="col-md-12">
+                                <!--Map goes here-->
+                                <div id="map_div"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <form class="form-horizontal form-label-left input_mask">
+                                            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                                                <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Search Location">
+                                                <span class="fa fa-map-marker form-control-feedback left" aria-hidden="true"></span>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="x_content">
+                                        <div class="row">
+                                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                <div class="tile-stats">
+                                                    <div class="icon"><i class="fa fa-tint"></i>
+                                                    </div>
+                                                    <div class="count">28 <sup>o</sup>C</div>
+
+                                                    <h3>Ratmalana</h3>
+                                                    <div>
+                                                        <p>Humidity: 81%</p>
+                                                        <p>Wind: 16 km/h</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                <div class="tile-stats">
+                                                    <div class="icon"><i class="fa fa-sun-o"></i>
+                                                    </div>
+                                                    <div class="count">31 <sup>o</sup>C</div>
+
+                                                    <h3>Moratuwa</h3>
+                                                    <div>
+                                                        <p>Humidity: 81%</p>
+                                                        <p>Wind: 16 km/h</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                <div class="tile-stats">
+                                                    <div class="icon"><i class="fa fa fa-cloud"></i>
+                                                    </div>
+                                                    <div class="count">30 <sup>o</sup>C</div>
+
+                                                    <h3>Panadura</h3>
+                                                    <div>
+                                                        <p>Humidity: 81%</p>
+                                                        <p>Wind: 16 km/h</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                <div class="tile-stats">
+                                                    <div class="icon"><i class="fa fa fa-bolt"></i>
+                                                    </div>
+                                                    <div class="count">26 <sup>o</sup>C</div>
+
+                                                    <h3>Dehiwala</h3>
+                                                    <div>
+                                                        <p>Humidity: 81%</p>
+                                                        <p>Wind: 16 km/h</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                <div class="tile-stats">
+                                                    <div class="icon"><i class="fa fa fa-sun-o"></i>
+                                                    </div>
+                                                    <div class="count">31 <sup>o</sup>C</div>
+
+                                                    <h3>New Location</h3>
+                                                    <div>
+                                                        <p>Humidity: 81%</p>
+                                                        <p>Wind: 16 km/h</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Moratuwa Weather Data <small>Daily progress</small></h2>
+                                        <div class="filter">
+                                            <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                                                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                                                <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                            <div class="demo-container">
+                                                <div id="chart_plot_02" class="demo-placeholder"></div>
+                                            </div>
+
+                                            <!--<div class="demo-container">-->
+                                                <!--<div id="chart_plot_03" class="demo-placeholder"></div>-->
+                                            <!--</div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /page content -->
+
+                <!-- footer content -->
+                <footer>
+                    <div class="pull-right">
+                        Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </footer>
+                <!-- /footer content -->
+            </div>
+        </div>
+
+        <!-- jQuery -->
+        <script src="/vendors/jquery/dist/jquery.min.js"></script>
+        <!-- Bootstrap -->
+        <script src="/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+        <!-- Chart.js -->
+        <script src="/vendors/Chart.js/dist/Chart.min.js"></script>
+        <!-- Flot -->
+        <script src="/vendors/Flot/jquery.flot.js"></script>
+        <script src="/vendors/Flot/jquery.flot.pie.js"></script>
+        <script src="/vendors/Flot/jquery.flot.time.js"></script>
+        <script src="/vendors/Flot/jquery.flot.stack.js"></script>
+        <script src="/vendors/Flot/jquery.flot.resize.js"></script>
+        <!-- DateJS -->
+        <script src="/vendors/DateJS/build/date.js"></script>
+        <!-- bootstrap-daterangepicker -->
+        <script src="/vendors/moment/min/moment.min.js"></script>
+        <script src="/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+        <!-- Custom Theme Scripts -->
+        <script src="/javascripts/script.js"></script>
+
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+            google.charts.load("current", {
+                "packages":["map"],
+                // Note: you will need to get a mapsApiKey for your project.
+                // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+                "mapsApiKey": "AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY"
+            });
+            google.charts.setOnLoadCallback(drawChart);
+            function drawChart() {
+                var data = google.visualization.arrayToDataTable([
+                    ['Lat', 'Long', 'Name'],
+                    [9.669413, 80.0231783, 'Jaffna'],
+                    [6.047014, 80.2128973, 'Galle'],
+                    [8.59458, 81.2161773, 'Trincomalee'],
+                    [6.91638, 79.8643133, 'Colombo']
+                ]);
+
+                var map = new google.visualization.Map(document.getElementById('map_div'));
+                map.draw(data, {
+                    showTooltip: true,
+                    showInfoWindow: true,
+                    useMapTypeControl: true
+                });
+            }
+
+        </script>
+    </body>
+</html>
