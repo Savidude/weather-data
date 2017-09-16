@@ -30,7 +30,6 @@ var logger = new (winston.Logger)({
     ]
 });
 
-/* GET users listing. */
 router.get('/data/add', function(req, res, next) {
     //Getting weather station ID and key
     var data = req.query;
@@ -52,9 +51,9 @@ router.get('/data/add', function(req, res, next) {
             var weatherStation = db.collection('WeatherStation');
             //Validating key and ID with the sent weather data
             var query = {"id": wsid, "key": key};
-            weatherStation.findOne(query, function (err, result) {
+            weatherStation.findOne(query, query, function (err, result) {
                 if (err) {
-                    logger.error("Error while validating weather data");
+                    logger.error("Error while validating weather data", err);
                     db.close;
                     res.status(500).send();
                     throw err;
@@ -77,7 +76,7 @@ router.get('/data/add', function(req, res, next) {
                         var currentdate = new Date;
                         var timestamp = currentdate.getFullYear() + "-"
                             + (currentdate.getMonth()+1)  + "-"
-                            + currentdate.getDate() + "T"
+                            + currentdate.getDate() + " "
                             + currentdate.getHours() + ":"
                             + currentdate.getMinutes() + ":"
                             + currentdate.getSeconds();
@@ -87,11 +86,12 @@ router.get('/data/add', function(req, res, next) {
                         currentData.rainfall = rainfall;
                         currentData.windspd = windspd;
                         currentData.winddir = winddir;
+                        currentData.recTime = Math.floor(Date.now());
 
                         //Inserting the obtained weather data to database
                         weatherData.insertOne(currentData, function (err, result) {
                             if (err) {
-                                logger.error("Error while inserting weather data", currentData);
+                                logger.error("Error while inserting weather data", err);
                                 res.status(500).send();
                                 db.close;
                                 throw err;

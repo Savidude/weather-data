@@ -49,8 +49,6 @@ var CURRENT_URL = window.location.href.split('#')[0].split('?')[0],
     $NAV_MENU = $('.nav_menu'),
     $FOOTER = $('footer');
 
-
-
 // Sidebar
 function init_sidebar() {
 // TODO: This is some kind of easy fix, maybe we can improve this
@@ -270,8 +268,6 @@ function countChecked() {
     }
 }
 
-
-
 // Accordion
 $(document).ready(function() {
     $(".expand").on("click", function () {
@@ -285,18 +281,6 @@ $(document).ready(function() {
         }
     });
 });
-
-// NProgress
-if (typeof NProgress != 'undefined') {
-    $(document).ready(function () {
-        NProgress.start();
-    });
-
-    $(window).load(function () {
-        NProgress.done();
-    });
-}
-
 
 //hover and retain popover when on popover content
 var originalLeave = $.fn.popover.Constructor.prototype.leave;
@@ -330,11 +314,9 @@ $('body').popover({
     }
 });
 
-
 function gd(year, month, day) {
     return new Date(year, month - 1, day).getTime();
 }
-
 
 function init_flot_chart(){
 
@@ -503,21 +485,6 @@ function init_autosize() {
 
 };
 
-
-/* INPUTS */
-
-function onAddTag(tag) {
-    alert("Added a tag: " + tag);
-}
-
-function onRemoveTag(tag) {
-    alert("Removed a tag: " + tag);
-}
-
-function onChangeTag(input, tag) {
-    alert("Changed a tag: " + tag);
-}
-
 /* DATERANGEPICKER */
 
 function init_daterangepicker() {
@@ -590,39 +557,87 @@ function init_daterangepicker() {
 }
 
 $(document).ready(function() {
-
-    // init_sparklines();
     init_flot_chart();
     init_sidebar();
-    // init_wysiwyg();
-    // init_InputMask();
-    // init_JQVmap();
-    // init_cropper();
-    // init_knob();
-    // init_IonRangeSlider();
-    // init_ColorPicker();
-    // init_TagsInput();
-    // init_parsley();
     init_daterangepicker();
-    // init_daterangepicker_right();
-    // init_daterangepicker_single_call();
-    // init_daterangepicker_reservation();
-    // init_SmartWizard();
-    // init_EasyPieChart();
-    // init_charts();
-    // init_echarts();
-    // init_morris_charts();
-    // init_skycons();
-    // init_select2();
-    // init_validator();
-    // init_DataTables();
-    // init_chart_doughnut();
-    // init_gauge();
-    // init_PNotify();
-    // init_starrr();
-    // init_calendar();
-    // init_compose();
-    // init_CustomNotification();
     init_autosize();
-    // init_autocomplete();
+});
+
+var app1 = angular.module('app1', []);
+var weatherStationDataLatest;
+
+//Get the GPS Coordinates of weather stations and display on map
+app1.controller('map', function ($scope, $http) {
+    $http.get("/data/stations").then(function (response) {
+        // console.log(JSON.stringify(response, null, 2));
+        if (response.status === 200) {
+            weatherStationDataLatest = response.data;
+
+            google.charts.load("current", {
+                "packages":["map"],
+                "mapsApiKey": "AIzaSyDof3ukKWJJlFrHqh5sJlPHPusUQ4lOwaU"
+            });
+            google.charts.setOnLoadCallback(drawChart);
+            function drawChart() {
+                var stationDataArray = [['Lat', 'Lon', 'Name']];
+                weatherStationDataLatest.forEach (function (station) {
+                    var stationData = [station.lat, station.lon, getWeatherDataInfoWindow(station).outerHTML];
+                    stationDataArray.push(stationData);
+                });
+
+                var data = google.visualization.arrayToDataTable(stationDataArray);
+                var map = new google.visualization.Map(document.getElementById('map_div'));
+                map.draw(data, {
+                    showTooltip: false,
+                    showInfoWindow: true,
+                    useMapTypeControl: true
+                });
+            }
+        }
+    });
+
+    function getWeatherDataInfoWindow(station) {
+        var stationInfoWindow = document.createElement('div');
+        stationInfoWindow.className = 'station-info'
+
+        var name = document.createElement('h3');
+        name.innerHTML = '<i class="fa fa-map-marker" aria-hidden="true"></i> ' + station.name;
+        stationInfoWindow.appendChild(name);
+
+        var coordinates = document.createElement('div');
+        var coordinatesTable = document.createElement('table');
+        var latitude = document.createElement('td');
+        latitude.innerHTML = 'Lat: ' + station.lat;
+        coordinatesTable.appendChild(latitude);
+        var longitude = document.createElement('td');
+        longitude.innerHTML = 'Lon: ' + station.lon;
+        coordinatesTable.appendChild(longitude);
+        coordinates.appendChild(coordinatesTable);
+        stationInfoWindow.appendChild(coordinates);
+
+        var temperature = document.createElement('h1');
+        temperature.innerHTML = station.temp + ' <sup>o</sup>C';
+        stationInfoWindow.appendChild(temperature);
+
+        var weatherData = document.createElement('table');
+        var row1 = document.createElement('tr');
+        var humidity = document.createElement('td');
+        humidity.innerHTML = 'Humidity: ' + station.humidity + '%';
+        row1.appendChild(humidity);
+        var rainfall = document.createElement('td');
+        rainfall.innerHTML = 'Rainfall: ' + station.rainfall + 'mm';
+        row1.appendChild(rainfall);
+        weatherData.appendChild(row1);
+        var row2 = document.createElement('tr');
+        var windspd = document.createElement('td');
+        windspd.innerHTML = 'Wind Speed: ' + station.windspd + 'km/h';
+        row2.appendChild(windspd);
+        var winddir = document.createElement('td');
+        winddir.innerHTML = 'Wind Direction: ' + station.winddir;
+        row2.appendChild(winddir);
+        weatherData.appendChild(row2);
+        stationInfoWindow.appendChild(weatherData);
+
+        return stationInfoWindow;
+    }
 });
