@@ -73,19 +73,12 @@ router.get('/data/add', function(req, res, next) {
                         var currentData = {};
                         currentData.wsid = wsid;
 
-                        var currentdate = new Date;
-                        var timestamp = currentdate.getFullYear() + "-"
-                            + (currentdate.getMonth()+1)  + "-"
-                            + currentdate.getDate() + " "
-                            + currentdate.getHours() + ":"
-                            + currentdate.getMinutes() + ":"
-                            + currentdate.getSeconds();
-                        currentData.recDateTime = timestamp;
-                        currentData.temp = temp;
-                        currentData.humidity = humidity;
-                        currentData.rainfall = rainfall;
-                        currentData.windspd = windspd;
-                        currentData.winddir = winddir;
+                        currentData.recDateTime = Date.now();
+                        currentData.temp = Number(temp);
+                        currentData.humidity = Number(humidity);
+                        currentData.rainfall = Number(rainfall);
+                        currentData.windspd = Number(windspd);
+                        currentData.winddir = Number(winddir);
                         currentData.recTime = Math.floor(Date.now());
 
                         //Inserting the obtained weather data to database

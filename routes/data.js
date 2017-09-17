@@ -30,7 +30,7 @@ var logger = new (winston.Logger)({
     ]
 });
 
-router.get('/stations', function(req, res, next) {
+router.get('/stations', function(req, res) {
     //Create MongoDB client and connect to it
     var mongoClient = mongodb.MongoClient;
     var contents = fs.readFileSync("routes/config.json");
@@ -129,6 +129,43 @@ router.get('/stations', function(req, res, next) {
             }
         });
     }
+});
+
+router.get('/stations/:id', function (req, res) {
+    //Getting start time and end time
+    var data = req.query;
+    var startTime = Number(data.start);
+    var endTime = Number(data.end);
+
+    var wsid = req.params.id;
+
+    //Create MongoDB client and connect to it
+    var mongoClient = mongodb.MongoClient;
+    var contents = fs.readFileSync("routes/config.json");
+    var jsonContent = JSON.parse(contents);
+    var mongoDBUrl= jsonContent.mongoDBUrl;
+
+    mongoClient.connect(mongoDBUrl, function (err, db) {
+        if (err) {
+            logger.error("Unable to connect to the Database", err);
+            db.close;
+            res.status(500).send();
+        } else {
+            var weatherData = db.collection('WeatherData');
+            var query = [{"wsid": wsid, "recDateTime": {$gt : startTime, $lt : endTime}}, {"_id": 0, "temp": 1,
+                "humidity": 1, "rainfall": 1, "windspd": 1, "winddir": 1, "recDateTime": 1}];
+            weatherData.find(query[0], query[1]).toArray(function (err, result) {
+                if (err) {
+                    logger.error("Unable to connect to query from database", err);
+                    db.close;
+                    res.status(500).send();
+                } else {
+                    console.log(result)
+                    res.status(200).json(result);
+                }
+            });
+        }
+    });
 });
 
 module.exports = router;

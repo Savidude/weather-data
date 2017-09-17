@@ -140,8 +140,8 @@
                                         <div class="row">
                                             <div ng-repeat="s in stations"
                                                  class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                                <div class="tile-stats">
-                                                    <div class="icon"><i class="fa fa-tint"></i>
+                                                <div class="tile-stats" ng-click="stationDataRequest(s.wsid)">
+                                                    <div class="icon"><i class="fa fa-sun-o"></i>
                                                     </div>
                                                     <div class="count"><span ng-bind="s.temp"></span> <sup>o</sup>C</div>
 
@@ -158,11 +158,11 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div id="data-plot" class="row">
                             <div class="col-md-12">
                                 <div class="x_panel">
                                     <div class="x_title">
-                                        <h2>Moratuwa Weather Data <small>Daily progress</small></h2>
+                                        <h2>Weather Data</h2>
                                         <div class="filter">
                                             <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
                                                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
@@ -173,13 +173,25 @@
                                     </div>
                                     <div class="x_content">
                                         <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <div class="demo-container">
-                                                <div id="chart_plot_02" class="demo-placeholder"></div>
-                                            </div>
-
                                             <!--<div class="demo-container">-->
-                                                <!--<div id="chart_plot_03" class="demo-placeholder"></div>-->
+                                                <!--<div id="chart_plot_02" class="demo-placeholder"></div>-->
                                             <!--</div>-->
+
+                                            <div class="demo-container">
+                                                <div id="temp_plot" class="demo-placeholder"></div>
+                                            </div> <br><br>
+
+                                            <div class="demo-container">
+                                                <div id="humidity_plot" class="demo-placeholder"></div>
+                                            </div> <br><br>
+
+                                            <div class="demo-container">
+                                                <div id="windspd_plot" class="demo-placeholder"></div>
+                                            </div> <br><br>
+
+                                            <div class="demo-container">
+                                                <div id="winddir_plot" class="demo-placeholder"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

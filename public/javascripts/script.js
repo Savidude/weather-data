@@ -318,40 +318,18 @@ function gd(year, month, day) {
     return new Date(year, month - 1, day).getTime();
 }
 
+var tempPlotData = [];
+var humidityPlotData = [];
+var windspdPlotData = [];
+var winddirPlotData = [];
+var plotSettings;
+var wsid;
+
 function init_flot_chart(){
 
     if( typeof ($.plot) === 'undefined'){ return; }
 
-    console.log('init_flot_chart');
-
-    var chart_plot_02_data = [];
-
-    // var chart_plot_03_data = [
-    //     [0, 1],
-    //     [1, 9],
-    //     [2, 6],
-    //     [3, 10],
-    //     [4, 5],
-    //     [5, 17],
-    //     [6, 6],
-    //     [7, 10],
-    //     [8, 7],
-    //     [9, 11],
-    //     [10, 35],
-    //     [11, 9],
-    //     [12, 12],
-    //     [13, 5],
-    //     [14, 3],
-    //     [15, 4],
-    //     [16, 9]
-    // ];
-
-
-    for (var i = 0; i < 30; i++) {
-        chart_plot_02_data.push([new Date(Date.today().add(i).days()).getTime(), randNum() + i + i + 10]);
-    }
-
-    var chart_plot_02_settings = {
+    plotSettings = {
         grid: {
             show: true,
             aboveData: true,
@@ -408,68 +386,97 @@ function init_flot_chart(){
         },
         xaxis: {
             mode: "time",
-            minTickSize: [1, "day"],
-            timeformat: "%d/%m/%y",
-            min: chart_plot_02_data[0][0],
-            max: chart_plot_02_data[20][0]
+            minTickSize: [1, "hour"],
+            timeformat: "%H:%M"
         }
     };
 
-    // var chart_plot_03_settings = {
-    //     series: {
-    //         curvedLines: {
-    //             apply: true,
-    //             active: true,
-    //             monotonicFit: true
-    //         }
-    //     },
-    //     colors: ["#26B99A"],
+
+    var chart_plot_02_data = [];
+
+    // for (var i = 0; i < 30; i++) {
+    //     chart_plot_02_data.push([new Date(Date.today().add(i).days()).getTime(), randNum() + i + i + 10]);
+    // }
+    //
+    // var chart_plot_02_settings = {
     //     grid: {
-    //         borderWidth: {
-    //             top: 0,
-    //             right: 0,
-    //             bottom: 1,
-    //             left: 1
-    //         },
-    //         borderColor: {
-    //             bottom: "#7F8790",
-    //             left: "#7F8790"
-    //         }
-    //     }
-    // };
-
-    if ($("#chart_plot_02").length){
-        console.log('Plot2');
-
-        $.plot( $("#chart_plot_02"),
-            [{
-                label: "Something",
-                data: chart_plot_02_data,
-                lines: {
-                    fillColor: "rgba(150, 202, 89, 0.12)"
-                },
-                points: {
-                    fillColor: "#fff" }
-            }], chart_plot_02_settings);
-
-    }
-
-    // if ($("#chart_plot_03").length){
-    //     console.log('Plot3');
-    //
-    //
-    //     $.plot($("#chart_plot_03"), [{
-    //         label: "Registrations",
-    //         data: chart_plot_03_data,
+    //         show: true,
+    //         aboveData: true,
+    //         color: "#3f3f3f",
+    //         labelMargin: 10,
+    //         axisMargin: 0,
+    //         borderWidth: 0,
+    //         borderColor: null,
+    //         minBorderMargin: 5,
+    //         clickable: true,
+    //         hoverable: true,
+    //         autoHighlight: true,
+    //         mouseActiveRadius: 100
+    //     },
+    //     series: {
     //         lines: {
-    //             fillColor: "rgba(150, 202, 89, 0.12)"
+    //             show: true,
+    //             fill: true,
+    //             lineWidth: 2,
+    //             steps: false
     //         },
     //         points: {
-    //             fillColor: "#fff"
+    //             show: true,
+    //             radius: 4.5,
+    //             symbol: "circle",
+    //             lineWidth: 3.0
     //         }
-    //     }], chart_plot_03_settings);
-    //
+    //     },
+    //     legend: {
+    //         position: "ne",
+    //         margin: [0, -25],
+    //         noColumns: 0,
+    //         labelBoxBorderColor: null,
+    //         labelFormatter: function(label, series) {
+    //             return label + '&nbsp;&nbsp;';
+    //         },
+    //         width: 40,
+    //         height: 1
+    //     },
+    //     colors: ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
+    //     shadowSize: 0,
+    //     tooltip: true,
+    //     tooltipOpts: {
+    //         content: "%s: %y.0",
+    //         xDateFormat: "%d/%m",
+    //         shifts: {
+    //             x: -30,
+    //             y: -50
+    //         },
+    //         defaultTheme: false
+    //     },
+    //     yaxis: {
+    //         min: 0
+    //     },
+    //     xaxis: {
+    //         mode: "time",
+    //         minTickSize: [1, "day"],
+    //         timeformat: "%d/%m/%y",
+    //         min: chart_plot_02_data[0][0],
+    //         max: chart_plot_02_data[20][0]
+    //     }
     // };
+    //
+    // if ($("#chart_plot_02").length){
+    //     console.log('Plot2');
+    //
+    //     $.plot( $("#chart_plot_02"),
+    //         [{
+    //             label: "Something",
+    //             data: chart_plot_02_data,
+    //             lines: {
+    //                 fillColor: "rgba(150, 202, 89, 0.12)"
+    //             },
+    //             points: {
+    //                 fillColor: "#fff" }
+    //         }], chart_plot_02_settings);
+    //
+    // }
 
 }
 
@@ -487,6 +494,9 @@ function init_autosize() {
 
 /* DATERANGEPICKER */
 
+var startTimestamp = moment();
+var endTimestamp = moment().add(1, 'days');
+
 function init_daterangepicker() {
 
     if( typeof ($.fn.daterangepicker) === 'undefined'){ return; }
@@ -498,8 +508,8 @@ function init_daterangepicker() {
     };
 
     var optionSet1 = {
-        startDate: moment().subtract(29, 'days'),
-        endDate: moment(),
+        startDate: moment(),
+        endDate: moment().add(1, 'days'),
         minDate: '01/01/2012',
         maxDate: '12/31/2017',
         dateLimit: {
@@ -511,7 +521,7 @@ function init_daterangepicker() {
         timePickerIncrement: 1,
         timePicker12Hour: true,
         ranges: {
-            'Today': [moment(), moment()],
+            'Today': [moment(), moment().add(1, 'days')],
             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
             'Last 7 Days': [moment().subtract(6, 'days'), moment()],
             'Last 30 Days': [moment().subtract(29, 'days'), moment()],
@@ -536,7 +546,7 @@ function init_daterangepicker() {
         }
     };
 
-    $('#reportrange span').html(moment().subtract(29, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+    $('#reportrange span').html(moment().format('MMMM D, YYYY') + ' - ' + moment().add(1, 'days').format('MMMM D, YYYY'));
     $('#reportrange').daterangepicker(optionSet1, cb);
     $('#reportrange').on('show.daterangepicker', function() {
         console.log("show event fired");
@@ -545,7 +555,35 @@ function init_daterangepicker() {
         console.log("hide event fired");
     });
     $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
-        console.log("apply event fired, start/end dates are " + picker.startDate.format('MMMM D, YYYY') + " to " + picker.endDate.format('MMMM D, YYYY'));
+        console.log("apply event fired, start/end dates are " + picker.startDate + " to " + picker.endDate);
+        var today = new Date();
+        var yesterday = new Date();
+        yesterday.setDate(today.getDate() -1);
+        var startDate = new Date (picker.startDate);
+        if (today.toDateString() === startDate.toDateString()) {
+            initTimeRange(today);
+        } else if (yesterday.toDateString() === startDate.toDateString()) {
+            yesterday.setHours(8);
+            startTimestamp = yesterday.getTime();
+
+            today.setHours(8);
+            endTimestamp = today.getTime();
+        } else {
+            startTimestamp = picker.startDate;
+            endTimestamp = picker.endDate;
+        }
+
+        $.ajax({
+            url: "/data/stations/" + wsid + "?start=" + startTimestamp + "&end=" + endTimestamp,
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (result) {
+                plotWeatherData(result);
+            },
+            error: function (error) {
+                console.log(JSON.stringify(error, null, 2));
+            }
+        });
     });
     $('#reportrange').on('cancel.daterangepicker', function(ev, picker) {
         console.log("cancel event fired");
@@ -556,11 +594,35 @@ function init_daterangepicker() {
 
 }
 
+function initTimeRange(today) {
+    //Checking if it is before 8 a.m.
+    if (today.getHours() < 8) {
+        var yesterday = new Date();
+        yesterday.setDate(today.getDate() -1);
+        yesterday.setHours(8);
+        startTimestamp = yesterday.getTime();
+
+        today.setHours(8);
+        endTimestamp = today.getTime();
+    } else {
+        today.setHours(8);
+        startTimestamp = today.getTime();
+
+        var tomorrow = new Date();
+        tomorrow.setDate(today.getDate() + 1);
+        tomorrow.setHours(8);
+        endTimestamp = tomorrow.getTime();
+    }
+}
+
 $(document).ready(function() {
     init_flot_chart();
     init_sidebar();
     init_daterangepicker();
     init_autosize();
+    initTimeRange(new Date());
+
+    document.getElementById('data-plot').style.visibility = 'hidden';
 });
 
 var app1 = angular.module('app1', []);
@@ -578,7 +640,9 @@ app1.controller('stations', function ($scope, $http) {
         } else {
             weatherStationDataLatestTemp = [];
             weatherStationDataLatest.forEach(function (data) {
-                if ((data.name).indexOf($scope.query) !== -1) {
+                var stationNameUpper = data.name.toUpperCase();
+                var queryUpper = $scope.query.toUpperCase();
+                if ((stationNameUpper).indexOf(queryUpper) !== -1) {
                     weatherStationDataLatestTemp.push(data);
                 }
             });
@@ -659,8 +723,87 @@ app1.controller('stations', function ($scope, $http) {
 
         return stationInfoWindow;
     }
+
+    $scope.stationDataRequest = function (id) {
+        var url = "/data/stations/" + id + "?start=" + startTimestamp + "&end=" + endTimestamp;
+        wsid = id;
+        $http.get(url).then(function (response) {
+            if (response.status === 200) {
+                document.getElementById('data-plot').style.visibility = 'visible';
+                var weatherData = response.data;
+                plotWeatherData(weatherData);
+            }
+        });
+    };
 });
 
-// app1.controller('stationCards', function ($scope) {
-//     $scope.stations = weatherStationDataLatest;
-// });
+function plotWeatherData(weatherData) {
+    weatherData.forEach (function (data) {
+        tempPlotData.push(data.recDateTime, data.temp);
+        humidityPlotData.push(data.recDateTime, data.humidity);
+        windspdPlotData.push(data.recDateTime, data.windspd);
+        winddirPlotData.push(data.recDateTime, data.winddir);
+    });
+    plotSettings.xaxis.min = weatherData[0].recDateTime;
+    plotSettings.xaxis.max = weatherData[weatherData.length - 1].recDateTime;
+    console.log(JSON.stringify(plotSettings, null, 2));
+
+    if( typeof ($.plot) !== 'undefined') {
+        console.log('---')
+        if ($("#temp_plot").length){
+            $.plot( $("#temp_plot"),
+                [{
+                    label: "Temperature",
+                    data: tempPlotData,
+                    lines: {
+                        fillColor: "rgba(150, 202, 89, 0.12)"
+                    },
+                    points: {
+                        fillColor: "#fff" }
+                }], plotSettings);
+
+        }
+
+        if ($("#humidity_plot").length){
+            $.plot( $("#humidity_plot"),
+                [{
+                    label: "Humidity",
+                    data: humidityPlotData,
+                    lines: {
+                        fillColor: "rgba(150, 202, 89, 0.12)"
+                    },
+                    points: {
+                        fillColor: "#fff" }
+                }], plotSettings);
+
+        }
+
+        if ($("#windspd_plot").length){
+            $.plot( $("#windspd_plot"),
+                [{
+                    label: "Wind Speed",
+                    data: windspdPlotData,
+                    lines: {
+                        fillColor: "rgba(150, 202, 89, 0.12)"
+                    },
+                    points: {
+                        fillColor: "#fff" }
+                }], plotSettings);
+
+        }
+
+        if ($("#winddir_plot").length){
+            $.plot( $("#winddir_plot"),
+                [{
+                    label: "Wind Direction",
+                    data: winddirPlotData,
+                    lines: {
+                        fillColor: "rgba(150, 202, 89, 0.12)"
+                    },
+                    points: {
+                        fillColor: "#fff" }
+                }], plotSettings);
+
+        }
+    }
+}
