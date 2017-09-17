@@ -565,13 +565,32 @@ $(document).ready(function() {
 
 var app1 = angular.module('app1', []);
 var weatherStationDataLatest;
+var weatherStationDataLatestTemp;
 
 //Get the GPS Coordinates of weather stations and display on map
-app1.controller('map', function ($scope, $http) {
+app1.controller('stations', function ($scope, $http) {
+    $scope.stations = null;
+
+    $scope.query = '';
+    $scope.locationSearch = function (keyEvent) {
+        if ($scope.query === '') {
+            $scope.stations = weatherStationDataLatest;
+        } else {
+            weatherStationDataLatestTemp = [];
+            weatherStationDataLatest.forEach(function (data) {
+                if ((data.name).indexOf($scope.query) !== -1) {
+                    weatherStationDataLatestTemp.push(data);
+                }
+            });
+            $scope.stations = weatherStationDataLatestTemp;
+        }
+    };
+
     $http.get("/data/stations").then(function (response) {
-        // console.log(JSON.stringify(response, null, 2));
         if (response.status === 200) {
             weatherStationDataLatest = response.data;
+            weatherStationDataLatestTemp = response.data;
+            $scope.stations = weatherStationDataLatestTemp;
 
             google.charts.load("current", {
                 "packages":["map"],
@@ -598,7 +617,7 @@ app1.controller('map', function ($scope, $http) {
 
     function getWeatherDataInfoWindow(station) {
         var stationInfoWindow = document.createElement('div');
-        stationInfoWindow.className = 'station-info'
+        stationInfoWindow.className = 'station-info';
 
         var name = document.createElement('h3');
         name.innerHTML = '<i class="fa fa-map-marker" aria-hidden="true"></i> ' + station.name;
@@ -641,3 +660,7 @@ app1.controller('map', function ($scope, $http) {
         return stationInfoWindow;
     }
 });
+
+// app1.controller('stationCards', function ($scope) {
+//     $scope.stations = weatherStationDataLatest;
+// });

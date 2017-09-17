@@ -115,11 +115,11 @@
 
                 <!-- page content -->
                 <div class="right_col" role="main">
-                    <div class="">
+                    <div class="" ng-controller="stations">
                         <div class="row top_tiles">
                             <div class="col-md-12 col-sm-12 col-xs-12">
                                 <!--Map goes here-->
-                                <div id="map_div" ng-controller="map"></div>
+                                <div id="map_div"></div>
                             </div>
                         </div>
 
@@ -129,75 +129,26 @@
                                     <div class="x_title">
                                         <form class="form-horizontal form-label-left input_mask">
                                             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                                                <input type="text" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Search Location">
+                                                <input type="text" class="form-control has-feedback-left"
+                                                       ng-model="query" ng-keyup="locationSearch($event)"
+                                                       id="inputSuccess2" placeholder="Search Location">
                                                 <span class="fa fa-map-marker form-control-feedback left" aria-hidden="true"></span>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="x_content">
                                         <div class="row">
-                                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                            <div ng-repeat="s in stations"
+                                                 class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                 <div class="tile-stats">
                                                     <div class="icon"><i class="fa fa-tint"></i>
                                                     </div>
-                                                    <div class="count">28 <sup>o</sup>C</div>
+                                                    <div class="count"><span ng-bind="s.temp"></span> <sup>o</sup>C</div>
 
-                                                    <h3>Ratmalana</h3>
+                                                    <h3><span ng-bind="s.name"></span></h3>
                                                     <div>
-                                                        <p>Humidity: 81%</p>
-                                                        <p>Wind: 16 km/h</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                                <div class="tile-stats">
-                                                    <div class="icon"><i class="fa fa-sun-o"></i>
-                                                    </div>
-                                                    <div class="count">31 <sup>o</sup>C</div>
-
-                                                    <h3>Moratuwa</h3>
-                                                    <div>
-                                                        <p>Humidity: 81%</p>
-                                                        <p>Wind: 16 km/h</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                                <div class="tile-stats">
-                                                    <div class="icon"><i class="fa fa fa-cloud"></i>
-                                                    </div>
-                                                    <div class="count">30 <sup>o</sup>C</div>
-
-                                                    <h3>Panadura</h3>
-                                                    <div>
-                                                        <p>Humidity: 81%</p>
-                                                        <p>Wind: 16 km/h</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                                <div class="tile-stats">
-                                                    <div class="icon"><i class="fa fa fa-bolt"></i>
-                                                    </div>
-                                                    <div class="count">26 <sup>o</sup>C</div>
-
-                                                    <h3>Dehiwala</h3>
-                                                    <div>
-                                                        <p>Humidity: 81%</p>
-                                                        <p>Wind: 16 km/h</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                                <div class="tile-stats">
-                                                    <div class="icon"><i class="fa fa fa-sun-o"></i>
-                                                    </div>
-                                                    <div class="count">31 <sup>o</sup>C</div>
-
-                                                    <h3>New Location</h3>
-                                                    <div>
-                                                        <p>Humidity: 81%</p>
-                                                        <p>Wind: 16 km/h</p>
+                                                        <p><span ng-bind="s.humidity"></span>%</p>
+                                                        <p><span ng-bind="s.windspd"></span> km/h</p>
                                                     </div>
                                                 </div>
                                             </div>
