@@ -363,7 +363,7 @@ function init_flot_chart(){
             margin: [0, -25],
             noColumns: 0,
             labelBoxBorderColor: null,
-            labelFormatter: function(label, series) {
+            labelFormatter: function (label, series) {
                 return label + '&nbsp;&nbsp;';
             },
             width: 40,
@@ -386,14 +386,13 @@ function init_flot_chart(){
         },
         xaxis: {
             mode: "time",
-            minTickSize: [1, "hour"],
-            timeformat: "%H:%M"
+            timeformat: "%I:%M %p"
         }
     };
 
 
-    var chart_plot_02_data = [];
-
+    // var chart_plot_02_data = [];
+    //
     // for (var i = 0; i < 30; i++) {
     //     chart_plot_02_data.push([new Date(Date.today().add(i).days()).getTime(), randNum() + i + i + 10]);
     // }
@@ -455,16 +454,12 @@ function init_flot_chart(){
     //     },
     //     xaxis: {
     //         mode: "time",
-    //         minTickSize: [1, "day"],
-    //         timeformat: "%d/%m/%y",
-    //         min: chart_plot_02_data[0][0],
-    //         max: chart_plot_02_data[20][0]
+    //         timeformat: "%y/%m/%d"
     //     }
     // };
     //
     // if ($("#chart_plot_02").length){
-    //     console.log('Plot2');
-    //
+    //     console.log(JSON.stringify(chart_plot_02_data, null, 2));
     //     $.plot( $("#chart_plot_02"),
     //         [{
     //             label: "Something",
@@ -562,15 +557,20 @@ function init_daterangepicker() {
         var startDate = new Date (picker.startDate);
         if (today.toDateString() === startDate.toDateString()) {
             initTimeRange(today);
+            plotSettings.xaxis.timeformat = "%I:%M %p";
         } else if (yesterday.toDateString() === startDate.toDateString()) {
             yesterday.setHours(8);
             startTimestamp = yesterday.getTime();
 
             today.setHours(8);
             endTimestamp = today.getTime();
+
+            plotSettings.xaxis.timeformat = "%I:%M %p";
         } else {
             startTimestamp = picker.startDate;
             endTimestamp = picker.endDate;
+
+            plotSettings.xaxis.timeformat = "%y/%m/%d";
         }
 
         $.ajax({
@@ -724,13 +724,14 @@ app1.controller('stations', function ($scope, $http) {
         return stationInfoWindow;
     }
 
-    $scope.stationDataRequest = function (id) {
+    $scope.stationDataRequest = function (id, name) {
         var url = "/data/stations/" + id + "?start=" + startTimestamp + "&end=" + endTimestamp;
         wsid = id;
         $http.get(url).then(function (response) {
             if (response.status === 200) {
                 document.getElementById('data-plot').style.visibility = 'visible';
                 var weatherData = response.data;
+                document.getElementById('weather-data-title').innerHTML = name + " Weather Data";
                 plotWeatherData(weatherData);
             }
         });
@@ -738,18 +739,24 @@ app1.controller('stations', function ($scope, $http) {
 });
 
 function plotWeatherData(weatherData) {
+    tempPlotData = [];
+    humidityPlotData = [];
+    windspdPlotData = [];
+    winddirPlotData = [];
     weatherData.forEach (function (data) {
-        tempPlotData.push(data.recDateTime, data.temp);
-        humidityPlotData.push(data.recDateTime, data.humidity);
-        windspdPlotData.push(data.recDateTime, data.windspd);
-        winddirPlotData.push(data.recDateTime, data.winddir);
+        tempPlotData.push([data.recDateTime, data.temp]);
+        humidityPlotData.push([data.recDateTime, data.humidity]);
+        windspdPlotData.push([data.recDateTime, data.windspd]);
+        winddirPlotData.push([data.recDateTime, data.winddir]);
     });
-    plotSettings.xaxis.min = weatherData[0].recDateTime;
-    plotSettings.xaxis.max = weatherData[weatherData.length - 1].recDateTime;
-    console.log(JSON.stringify(plotSettings, null, 2));
+    console.log(JSON.stringify(tempPlotData, null, 2));
+
+    if (weatherData.length > 0) {
+        plotSettings.xaxis.min = weatherData[0].recDateTime;
+        plotSettings.xaxis.max = weatherData[weatherData.length - 1].recDateTime;
+    }
 
     if( typeof ($.plot) !== 'undefined') {
-        console.log('---')
         if ($("#temp_plot").length){
             $.plot( $("#temp_plot"),
                 [{
