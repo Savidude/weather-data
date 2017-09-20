@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app1">
+<html lang="en" ng-app="app2">
     <head>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -16,7 +16,7 @@
         <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
         <!-- bootstrap-daterangepicker -->
         <link href="/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
-         <!--Custom Theme Style-->
+        <!--Custom Theme Style-->
         <link href="/stylesheets/style.css" rel="stylesheet">
     </head>
 
@@ -120,13 +120,6 @@
                 <!-- page content -->
                 <div class="right_col" role="main">
                     <div class="" ng-controller="stations">
-                        <div class="row top_tiles">
-                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                <!--Map goes here-->
-                                <div id="map_div"></div>
-                            </div>
-                        </div>
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="x_panel">
@@ -135,62 +128,49 @@
                                             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                                                 <input type="text" class="form-control has-feedback-left"
                                                        ng-model="query" ng-keyup="locationSearch($event)"
-                                                       id="inputSuccess2" placeholder="Search Location">
+                                                       placeholder="Search Stations">
                                                 <span class="fa fa-map-marker form-control-feedback left" aria-hidden="true"></span>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="x_content">
                                         <div class="row">
+                                            <div class="station-actions">
+                                                <button type="button" class="btn btn-primary">
+                                                    <i class="fa fa-plus" aria-hidden="true"></i> Add Station
+                                                </button>
+                                            </div>
                                             <div ng-repeat="s in stations"
                                                  class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                                <div class="tile-stats" ng-click="stationDataRequest(s.wsid, s.name)">
-                                                    <div class="icon"><i class="fa fa-sun-o"></i>
+                                                <div class="tile-stats">
+                                                    <div class="icon"><i class="fa fa-globe"></i>
                                                     </div>
-                                                    <div class="count"><span ng-bind="s.temp"></span> <sup>o</sup>C</div>
+                                                    <div class="count"><span ng-bind="s.name"></span></div>
 
-                                                    <h3><span ng-bind="s.name"></span></h3>
                                                     <div>
-                                                        <p><span ng-bind="s.humidity"></span>%</p>
-                                                        <p><span ng-bind="s.windspd"></span> km/h</p>
+                                                        <table>
+                                                            <td>Lat: <span ng-bind="s.lat"></span></td>
+                                                            <td>Lon: <span ng-bind="s.lon"></span></td>
+                                                        </table>
+                                                    </div>
+                                                    <div>
+                                                        <p>ID: <span ng-bind="s.id"></span></p>
+                                                        <p>Key: <span ng-bind="s.key"></span></p>
+                                                        <p>Status: <span ng-bind="s.status"></span></p>
+                                                        <p>Added By: <span ng-bind="s.added_by"></span></p>
+                                                        <p>Added Date: <span ng-bind="s.added_date_time"></span></p>
+                                                        <p>Notify Email: <span ng-bind="s.notify_email"></span></p>
+                                                        <p>Notify Phone: <span ng-bind="s.notify_phone"></span></p>
+                                                    </div>
+                                                    <div class="station-actions">
+                                                        <button type="button" class="btn btn-default">
+                                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger">
+                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        </button>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="data-plot" class="row">
-                            <div class="col-md-12">
-                                <div class="x_panel">
-                                    <div class="x_title">
-                                        <h2 id="weather-data-title">Weather Data</h2>
-                                        <div class="filter">
-                                            <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
-                                                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                                                <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
-                                            </div>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="x_content">
-                                        <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <!--<div class="demo-container">-->
-                                                <!--<div id="temp_plot" class="demo-placeholder"></div>-->
-                                            <!--</div> <br><br>-->
-
-                                            <div class="demo-container">
-                                                <div id="humidity_plot" class="demo-placeholder"></div>
-                                            </div> <br><br>
-
-                                            <div class="demo-container">
-                                                <div id="windspd_plot" class="demo-placeholder"></div>
-                                            </div> <br><br>
-
-                                            <div class="demo-container">
-                                                <div id="winddir_plot" class="demo-placeholder"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -216,25 +196,9 @@
         <script src="/vendors/jquery/dist/jquery.min.js"></script>
         <!-- Bootstrap -->
         <script src="/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-        <!-- Chart.js -->
-        <script src="/vendors/Chart.js/dist/Chart.min.js"></script>
-        <!-- Flot -->
-        <script src="/vendors/Flot/jquery.flot.js"></script>
-        <script src="/vendors/Flot/jquery.flot.pie.js"></script>
-        <script src="/vendors/Flot/jquery.flot.time.js"></script>
-        <script src="/vendors/Flot/jquery.flot.stack.js"></script>
-        <script src="/vendors/Flot/jquery.flot.resize.js"></script>
-        <!-- DateJS -->
-        <script src="/vendors/DateJS/build/date.js"></script>
-        <!-- bootstrap-daterangepicker -->
-        <script src="/vendors/moment/min/moment.min.js"></script>
-        <script src="/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-
         <!--Angular JS-->
         <script src="/vendors/angular-1.6.5/angular.min.js"></script>
-        <!--Getting Google Maps API source-->
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <!-- Custom Scripts -->
-        <script src="/javascripts/script.js"></script>
+        <script src="/javascripts/stations.js"></script>
     </body>
 </html>

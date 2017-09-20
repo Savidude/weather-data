@@ -4244,3 +4244,8 @@ td {
   padding-left: 6px;
   padding-right: 6px;
 }
+
+.station-actions {
+  text-align: right;
+  margin-top: 6px;
+}

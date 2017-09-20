@@ -160,7 +160,33 @@ router.get('/stations/:id', function (req, res) {
                     db.close;
                     res.status(500).send();
                 } else {
-                    console.log(result)
+                    res.status(200).json(result);
+                }
+            });
+        }
+    });
+});
+
+router.get('/all/stations', function (req, res) {
+    //Create MongoDB client and connect to it
+    var mongoClient = mongodb.MongoClient;
+    var contents = fs.readFileSync("routes/config.json");
+    var jsonContent = JSON.parse(contents);
+    var mongoDBUrl= jsonContent.mongoDBUrl;
+
+    mongoClient.connect(mongoDBUrl, function (err, db) {
+        if (err) {
+            logger.error("Unable to connect to the Database", err);
+            db.close;
+            res.status(500).send();
+        } else {
+            var weatherStation = db.collection('WeatherStation');
+            weatherStation.find().toArray(function (err, result) {
+                if (err) {
+                    logger.error("Unable to connect to query from database", err);
+                    db.close;
+                    res.status(500).send();
+                } else {
                     res.status(200).json(result);
                 }
             });
