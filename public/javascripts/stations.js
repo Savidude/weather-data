@@ -142,6 +142,7 @@ function init_sidebar() {
 
 $(document).ready(function() {
     init_sidebar();
+    // document.getElementById('station-data-info').style.visibility = 'hidden';
 });
 
 var app2 = angular.module('app2', []);
@@ -175,4 +176,44 @@ app2.controller('stations', function ($scope, $http) {
             $scope.stations = weatherStationDataLatestTemp;
         }
     });
+
+    $scope.createStation = function () {
+      var name = document.getElementById('name').value;
+      var lat = document.getElementById('lat').value;
+      var lon = document.getElementById('lon').value;
+      var email = document.getElementById('email').value;
+      var phone = document.getElementById('phone').value;
+
+      // if (!isFloat(lat) || !isFloat(lon)) {
+      //     alert ("Invalid Latitude or Longitude value");
+      //     return;
+      // }
+
+      var user = "Guest"; //TODO: Get the correct user
+
+      var url = "/data/create/stations?name=" + name + "&lat=" + lat + "&lon=" + lon + "&email=" + email + "&phone=" + phone +
+      "&user=" + user;
+        $http.get(url).then(function (response) {
+            if (response.status === 201) {
+                document.getElementById('station-data-form').reset();
+                var stationData = response.data;
+                weatherStationDataLatest.push(stationData);
+                document.getElementById('station-search').value = stationData.name;
+
+                weatherStationDataLatestTemp = [];
+                weatherStationDataLatest.forEach(function (data) {
+                    var stationNameUpper = data.name.toUpperCase();
+                    var queryUpper = stationData.name.toUpperCase();
+                    if ((stationNameUpper).indexOf(queryUpper) !== -1) {
+                        weatherStationDataLatestTemp.push(data);
+                    }
+                });
+                $scope.stations = weatherStationDataLatestTemp;
+            }
+        });
+    };
+
+    function isFloat(n){
+        return Number(n) === n && n % 1 !== 0;
+    }
 });

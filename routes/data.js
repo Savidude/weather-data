@@ -181,13 +181,65 @@ router.get('/all/stations', function (req, res) {
             res.status(500).send();
         } else {
             var weatherStation = db.collection('WeatherStation');
-            weatherStation.find().toArray(function (err, result) {
+            var sortquery = {"name": 1};
+            weatherStation.find().sort(sortquery).toArray(function (err, result) {
                 if (err) {
                     logger.error("Unable to connect to query from database", err);
                     db.close;
                     res.status(500).send();
                 } else {
                     res.status(200).json(result);
+                }
+            });
+        }
+    });
+});
+
+router.get('/create/stations', function (req, res) {
+    var data = req.query;
+
+    var stationData = {};
+    stationData.name = data.name;
+    stationData.lat = parseFloat(data.lat);
+    stationData.lon = parseFloat(data.lon);
+    stationData.added_by = data.user;
+    stationData.notify_email = data.email;
+    stationData.notify_phone = data.phone;
+    stationData.status = "Active";
+
+    var token = require('rand-token').uid;
+    stationData.id = token(8);
+    stationData.key = token(8);
+
+    var today = new Date();
+    var dateTime = today.getDate() + "/"
+        + today.getMonth()+1  + "/"
+        + today.getFullYear() + " "
+        + today.getHours() + ":"
+        + today.getMinutes() + ":"
+        + today.getSeconds();
+    stationData.added_date_time = dateTime;
+
+    //Create MongoDB client and connect to it
+    var mongoClient = mongodb.MongoClient;
+    var contents = fs.readFileSync("routes/config.json");
+    var jsonContent = JSON.parse(contents);
+    var mongoDBUrl= jsonContent.mongoDBUrl;
+
+    mongoClient.connect(mongoDBUrl, function (err, db) {
+        if (err) {
+            logger.error("Unable to connect to the Database", err);
+            db.close;
+            res.status(500).send();
+        } else {
+            var weatherStation = db.collection('WeatherStation');
+            weatherStation.insertOne(stationData, function (err, result) {
+                if (err) {
+                    logger.error("Unable to insert weather data to database", err);
+                    db.close;
+                    res.status(500).send();
+                } else {
+                    res.status(201).json(stationData);
                 }
             });
         }
