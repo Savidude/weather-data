@@ -73,7 +73,7 @@ router.get('/data/add', function(req, res, next) {
                         var currentData = {};
                         currentData.wsid = wsid;
 
-                        currentData.recDateTime = Date.now();
+                        currentData.recDateTime = Number(data.rectime);
                         currentData.temp = Number(temp);
                         currentData.humidity = Number(humidity);
                         currentData.rainfall = Number(rainfall);
@@ -91,7 +91,7 @@ router.get('/data/add', function(req, res, next) {
                             } else {
                                 logger.info("Added weather data to database", currentData);
                                 db.close;
-                                res.status(201).send();
+                                res.status(201).send("success");
                             }
                         });
                     }
