@@ -701,7 +701,7 @@ app1.controller('stations', function ($scope, $http) {
         var weatherData = document.createElement('table');
         var row1 = document.createElement('tr');
         var humidity = document.createElement('td');
-        humidity.innerHTML = 'Humidity: ' + station.humidity + '%';
+        humidity.innerHTML = 'Relative Humidity: ' + station.humidity + '%';
         row1.appendChild(humidity);
         var rainfall = document.createElement('td');
         rainfall.innerHTML = 'Rainfall: ' + station.rainfall + 'mm';
@@ -716,6 +716,17 @@ app1.controller('stations', function ($scope, $http) {
         row2.appendChild(winddir);
         weatherData.appendChild(row2);
         stationInfoWindow.appendChild(weatherData);
+
+        var lastUpdate = document.createElement('p');
+        var lastUpdatedDate = new Date(station.recDateTime);
+        var dateTime = lastUpdatedDate.getDate() + "/"
+        + (lastUpdatedDate.getMonth()+1)  + "/"
+        + lastUpdatedDate.getFullYear() + " "
+        + lastUpdatedDate.getHours() + ":"
+        + (lastUpdatedDate.getMinutes() < 10 ? '0' + lastUpdatedDate.getMinutes() : lastUpdatedDate.getMinutes()) + ":"
+        + (lastUpdatedDate.getSeconds() < 10 ? '0' + lastUpdatedDate.getSeconds() : lastUpdatedDate.getSeconds());
+        lastUpdate.innerHTML = 'Last Updated on: ' + dateTime;
+        stationInfoWindow.appendChild(lastUpdate);
 
         return stationInfoWindow;
     }

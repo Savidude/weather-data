@@ -4249,3 +4249,7 @@ td {
   text-align: right;
   margin-top: 6px;
 }
+
+.station-info > p {
+  margin-top: 12px;
+}

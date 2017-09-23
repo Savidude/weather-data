@@ -85,7 +85,7 @@ router.get('/stations', function(req, res) {
 
                                 //Getting weather data
                                 var weatherDataQuery = [{"recTime": station.last}, {"_id": 0, "temp": 1, "humidity": 1,
-                                    "rainfall": 1, "windspd": 1, "winddir": 1}];
+                                    "rainfall": 1, "windspd": 1, "winddir": 1, "recDateTime": 1}];
                                 findStationData(weatherData, weatherDataQuery, function (err, weatherDataResult) {
                                     if (err) {
                                         logger.error("Error while querying weather data", err);
@@ -100,6 +100,7 @@ router.get('/stations', function(req, res) {
                                             stationData.rainfall = weatherDataResult.rainfall;
                                             stationData.windspd = weatherDataResult.windspd;
                                             stationData.winddir = weatherDataResult.winddir;
+                                            stationData.recDateTime = weatherDataResult.recDateTime;
 
                                             stationDataArray.push(stationData);
                                         }
@@ -213,11 +214,11 @@ router.get('/create/stations', function (req, res) {
 
     var today = new Date();
     var dateTime = today.getDate() + "/"
-        + today.getMonth()+1  + "/"
+        + (today.getMonth()+1)  + "/"
         + today.getFullYear() + " "
         + today.getHours() + ":"
-        + today.getMinutes() + ":"
-        + today.getSeconds();
+        + (today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes()) + ":"
+        + (today.getSeconds() < 10 ? '0' + today.getSeconds() : today.getSeconds());
     stationData.added_date_time = dateTime;
 
     //Create MongoDB client and connect to it

@@ -145,14 +145,12 @@
                                             <div ng-repeat="s in stations"
                                                  class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                 <div class="tile-stats" ng-click="stationDataRequest(s.wsid, s.name)">
-                                                    <div class="icon"><i class="fa fa-sun-o"></i>
-                                                    </div>
                                                     <div class="count"><span ng-bind="s.temp"></span> <sup>o</sup>C</div>
 
                                                     <h3><span ng-bind="s.name"></span></h3>
                                                     <div>
-                                                        <p><span ng-bind="s.humidity"></span>%</p>
-                                                        <p><span ng-bind="s.windspd"></span> km/h</p>
+                                                        <p>Rainfall: <span ng-bind="s.rainfall"></span> mm</p>
+                                                        <p>Wind Speed: <span ng-bind="s.windspd"></span> km/h</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -177,9 +175,9 @@
                                     </div>
                                     <div class="x_content">
                                         <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <!--<div class="demo-container">-->
-                                                <!--<div id="temp_plot" class="demo-placeholder"></div>-->
-                                            <!--</div> <br><br>-->
+                                            <div class="demo-container">
+                                                <div id="temp_plot" class="demo-placeholder"></div>
+                                            </div> <br><br>
 
                                             <div class="demo-container">
                                                 <div id="humidity_plot" class="demo-placeholder"></div>
