@@ -142,7 +142,6 @@ function init_sidebar() {
 
 $(document).ready(function() {
     init_sidebar();
-    // document.getElementById('station-data-info').style.visibility = 'hidden';
 });
 
 var app2 = angular.module('app2', []);
@@ -305,6 +304,11 @@ app2.controller('stations', function ($scope, $http) {
     function isFloat(n){
         return Number(n) === n && n % 1 !== 0;
     }
+
+    $scope.go = function ( path ) {
+        console.log(path)
+        window.location = path
+    };
 });
 
 function editStationData(id) {

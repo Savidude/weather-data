@@ -764,6 +764,8 @@ function plotWeatherData(weatherData) {
         plotSettings.xaxis.max = weatherData[weatherData.length - 1].recDateTime;
     }
 
+    window.location.hash = '#data-plot';
+
     if( typeof ($.plot) !== 'undefined') {
         if ($("#rainfall_plot").length){
             $.plot( $("#rainfall_plot"),

@@ -11,4 +11,9 @@ router.get('/stations', function(req, res, next) {
     res.render('stations', { title: 'Weather Data' });
 });
 
+router.get('/station/:id', function(req, res, next) {
+    var wsid = req.params.id;
+    res.render('station-info', { title: 'Weather Data', wsid: wsid });
+});
+
 module.exports = router;

@@ -132,6 +132,36 @@ router.get('/stations', function(req, res) {
     }
 });
 
+router.get('/station/:id', function (req, res) {
+    var wsid = req.params.id;
+
+    //Create MongoDB client and connect to it
+    var mongoClient = mongodb.MongoClient;
+    var contents = fs.readFileSync("routes/config.json");
+    var jsonContent = JSON.parse(contents);
+    var mongoDBUrl= jsonContent.mongoDBUrl;
+
+    mongoClient.connect(mongoDBUrl, function (err, db) {
+        if (err) {
+            logger.error("Unable to connect to the Database", err);
+            db.close;
+            res.status(500).send();
+        } else {
+            var weatherStation = db.collection('WeatherStation');
+            var query = [{"id": wsid}, {"_id": 0, "name": 1}];
+            weatherStation.findOne(query[0], query[1], function (err, result) {
+                if (err) {
+                    logger.error("Unable find weather station name", err);
+                    db.close;
+                    res.status(500).send();
+                } else {
+                    res.status(200).json(result);
+                }
+            })
+        }
+    });
+});
+
 router.get('/stations/:id', function (req, res) {
     //Getting start time and end time
     var data = req.query;
