@@ -183,6 +183,7 @@ app2.controller('stations', function ($scope, $http) {
       var lon = document.getElementById('lon').value;
       var email = document.getElementById('email').value;
       var phone = document.getElementById('phone').value;
+      var sim = document.getElementById('sim').value;
 
       // if (!isFloat(lat) || !isFloat(lon)) {
       //     alert ("Invalid Latitude or Longitude value");
@@ -192,7 +193,7 @@ app2.controller('stations', function ($scope, $http) {
       var user = "Guest"; //TODO: Get the correct user
 
       var url = "/data/create/stations?name=" + name + "&lat=" + lat + "&lon=" + lon + "&email=" + email + "&phone=" + phone +
-      "&user=" + user;
+      "&sim=" + sim + "&user=" + user;
         $http.get(url).then(function (response) {
             if (response.status === 201) {
                 document.getElementById('station-data-form').reset();
@@ -213,7 +214,85 @@ app2.controller('stations', function ($scope, $http) {
         });
     };
 
+    $scope.editStation = function (station) {
+        var modal =
+            '<div class="modal fade" role="dialog" id="editStationModal">' +
+                '<div class="modal-dialog">' +
+                    '<div class="modal-content">' +
+                        '<div class="modal-header">' +
+                            '<button type="button" class="close" data-dismiss="modal">x</button>' +
+                            '<h4 class="modal-title">Edit Station</h4>' +
+                        '</div>' +
+                        '<div class="modal-body">' +
+                            '<form id="station-data-form2">' +
+                                '<div class="form-group">' +
+                                    '<label for="name">Name:</label>' +
+                                    '<input type="text" class="form-control" id="edit-name" value=' + station.name +'>' +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                    '<label for="name">Latitude:</label>' +
+                                    '<input type="text" class="form-control" id="edit-lat" value=' + station.lat +'>' +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                    '<label for="name">Longitude:</label>' +
+                                    '<input type="text" class="form-control" id="edit-lon" value=' + station.lon +'>' +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                    '<label for="name">Notify Email:</label>' +
+                                    '<input type="text" class="form-control" id="edit-email" value=' + station.notify_email +'>' +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                    '<label for="name">Notify Phone:</label>' +
+                                    '<input type="text" class="form-control" id="edit-phone" value=' + station.notify_phone +'>' +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                    '<label for="name">SIM Number:</label>' +
+                                    '<input type="text" class="form-control" id="edit-sim" value=' + station.sim +'>' +
+                                '</div>' +
+                            '</form>' +
+                        '</div>' +
+                        '<div class="modal-footer">' +
+                            '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+                            '<button type="button" class="btn btn-success" data-dismiss="modal" ' +
+                                'onclick="editStationData(\'' + station.id + '\')">Save Changes</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        var modal_div = document.createElement('div');
+        modal_div.innerHTML = modal;
+        var weather_station_data_div = document.getElementById('weather-station-data');
+        weather_station_data_div.appendChild(modal_div);
+
+        $('#editStationModal').modal('show');
+        $("#editStationModal").on("hidden.bs.modal", function () {
+            modal_div.remove();
+        });
+    };
+
     function isFloat(n){
         return Number(n) === n && n % 1 !== 0;
     }
 });
+
+function editStationData(id) {
+    var station = {};
+    station.id = id;
+    station.name = document.getElementById('edit-name').value;
+    station.lat = document.getElementById('edit-lat').value;
+    station.lon = document.getElementById('edit-lon').value;
+    station.email = document.getElementById('edit-email').value;
+    station.phone = document.getElementById('edit-phone').value;
+    station.sim = document.getElementById('edit-sim').value;
+
+    $.ajax({
+        type: "POST",
+        contentType: 'application/json',
+        dataType: "json",
+        url: "/data/update/station",
+        data: JSON.stringify(station),
+        success: function (result) {
+            location.reload()
+        }
+    });
+}

@@ -206,6 +206,7 @@ router.get('/create/stations', function (req, res) {
     stationData.added_by = data.user;
     stationData.notify_email = data.email;
     stationData.notify_phone = data.phone;
+    stationData.sim = data.sim;
     stationData.status = "Active";
 
     var token = require('rand-token').uid;
@@ -241,6 +242,54 @@ router.get('/create/stations', function (req, res) {
                     res.status(500).send();
                 } else {
                     res.status(201).json(stationData);
+                }
+            });
+        }
+    });
+});
+
+router.post('/update/station', function (req, res) {
+    var stationData = req.body;
+
+    //Create MongoDB client and connect to it
+    var mongoClient = mongodb.MongoClient;
+    var contents = fs.readFileSync("routes/config.json");
+    var jsonContent = JSON.parse(contents);
+    var mongoDBUrl= jsonContent.mongoDBUrl;
+
+    mongoClient.connect(mongoDBUrl, function (err, db) {
+        if (err) {
+            logger.error("Unable to connect to the Database", err);
+            db.close;
+            res.status(500).send();
+        } else {
+            var weatherStation = db.collection('WeatherStation');
+            var findQuery = [{"id": stationData.id},
+                {"_id": 0, "name": 1, "id": 1, "key": 1, "lat": 1, "lon": 1, "added_by": 1, "notify_email": 1,
+                    "notify_phone": 1, "sim": 1, "status": 1, "added_date_time": 1}];
+            weatherStation.findOne(findQuery[0], findQuery[1], function (err, result) {
+                if (err) {
+                    logger.error("Unable to find station while updating.", err);
+                    db.close;
+                    res.status(500).send();
+                } else {
+                    result.name = stationData.name;
+                    result.lat = stationData.lat;
+                    result.lon = stationData.lon;
+                    result.notify_email = stationData.email;
+                    result.notify_phone = stationData.phone;
+                    result.sim = stationData.sim;
+
+                    var updateQuery = {"id": stationData.id};
+                    weatherStation.updateOne(updateQuery, result, function (err, result2) {
+                        if (err) {
+                            logger.error("Unable to update station", err);
+                            db.close;
+                            res.status(500).send();
+                        } else {
+                            res.status(200).json(result2);
+                        }
+                    });
                 }
             });
         }

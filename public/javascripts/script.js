@@ -756,7 +756,6 @@ function plotWeatherData(weatherData) {
         windspdPlotData.push([data.recDateTime, data.windspd]);
         winddirPlotData.push([data.recDateTime, data.winddir]);
     });
-    console.log(JSON.stringify(tempPlotData, null, 2));
 
     if (weatherData.length > 0) {
         plotSettings.xaxis.min = weatherData[0].recDateTime;

@@ -135,7 +135,7 @@
                                     </div>
                                     <div class="x_content">
                                         <div class="row">
-                                            <div class="station-actions">
+                                            <div class="add_station">
                                                 <button type="button" class="btn btn-primary" data-toggle="modal"
                                                         data-target="#addStationModal">
                                                     <i class="fa fa-plus" aria-hidden="true"></i> Add Station
@@ -173,6 +173,10 @@
                                                                     <label for="phone">Notify Phone:</label>
                                                                     <input type="text" class="form-control" id="phone">
                                                                 </div>
+                                                                <div class="form-group">
+                                                                    <label for="sim">SIM Number:</label>
+                                                                    <input type="text" class="form-control" id="sim">
+                                                                </div>
                                                             </form>
                                                         </div>
                                                         <div class="modal-footer">
@@ -187,33 +191,50 @@
                                                 </div>
                                             </div>
 
-                                            <div ng-repeat="s in stations"
-                                                 class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                                <div class="tile-stats">
-                                                    <div class="count"><span ng-bind="s.name"></span></div>
-
-                                                    <div>
-                                                        <table>
-                                                            <td>Lat: <span ng-bind="s.lat"></span></td>
-                                                            <td>Lon: <span ng-bind="s.lon"></span></td>
-                                                        </table>
-                                                    </div>
-                                                    <div>
-                                                        <p>ID: <span ng-bind="s.id"></span></p>
-                                                        <p>Key: <span ng-bind="s.key"></span></p>
-                                                        <p>Status: <span ng-bind="s.status"></span></p>
-                                                        <p>Added By: <span ng-bind="s.added_by"></span></p>
-                                                        <p>Added Date: <span ng-bind="s.added_date_time"></span></p>
-                                                        <p>Notify Email: <span ng-bind="s.notify_email"></span></p>
-                                                        <p>Notify Phone: <span ng-bind="s.notify_phone"></span></p>
-                                                    </div>
-                                                    <div class="station-actions">
-                                                        <button type="button" class="btn btn-default">
-                                                            <i class="fa fa-pencil" aria-hidden="true"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-danger">
-                                                            <i class="fa fa-trash" aria-hidden="true"></i>
-                                                        </button>
+                                            <div id="weather-station-data">
+                                                <div ng-repeat="s in stations"
+                                                     class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                    <div class="tile-stats">
+                                                        <div class="count"><span ng-bind="s.name"></span></div>
+                                                        <div>
+                                                            <table>
+                                                                <td>Lat: <span ng-bind="s.lat"></span></td>
+                                                                <td>Lon: <span ng-bind="s.lon"></span></td>
+                                                            </table>
+                                                        </div>
+                                                        <div>
+                                                            <p>ID: <span ng-bind="s.id"></span></p>
+                                                            <p>Key: <span ng-bind="s.key"></span></p>
+                                                            <p>Status: <span ng-bind="s.status"></span></p>
+                                                            <p>Added By: <span ng-bind="s.added_by"></span></p>
+                                                            <p>Added Date: <span ng-bind="s.added_date_time"></span></p>
+                                                            <p>Notify Email: <span ng-bind="s.notify_email"></span></p>
+                                                            <p>Notify Phone: <span ng-bind="s.notify_phone"></span></p>
+                                                            <p>SIM Number: <span ng-bind="s.sim"></span></p>
+                                                        </div>
+                                                        <div class="station-options">
+                                                            <div class="station-data">
+                                                                <button type="button" class="btn btn-default"
+                                                                        data-toggle="tooltip" data-placement="bottom" title="Info">
+                                                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-default"
+                                                                        data-toggle="tooltip" data-placement="bottom" title="Health">
+                                                                    <i class="fa fa-heart" aria-hidden="true"></i>
+                                                                </button>
+                                                            </div>
+                                                            <div class="station-actions">
+                                                                <button type="button" class="btn btn-default"
+                                                                        data-toggle="tooltip" data-placement="bottom" title="Edit"
+                                                                        ng-click="editStation(s)">
+                                                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-danger"
+                                                                        data-toggle="tooltip" data-placement="bottom" title="Delete">
+                                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

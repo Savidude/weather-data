@@ -4245,9 +4245,26 @@ td {
   padding-right: 6px;
 }
 
+.add_station {
+  text-align: right;
+}
+
+.station-options {
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
 .station-actions {
   text-align: right;
-  margin-top: 6px;
+}
+
+.station-data {
+  text-align: left;
+}
+
+.station-data, .station-actions {
+  display: inline;
 }
 
 .station-info > p {
