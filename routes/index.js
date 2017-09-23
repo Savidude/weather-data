@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
 
 /* GET weather stations page. */
 router.get('/stations', function(req, res, next) {
-    res.render('stations');
+    res.render('stations', { title: 'Weather Data' });
 });
 
 module.exports = router;

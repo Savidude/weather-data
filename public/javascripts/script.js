@@ -746,11 +746,13 @@ app1.controller('stations', function ($scope, $http) {
 });
 
 function plotWeatherData(weatherData) {
+    rainfallPlotData = [];
     tempPlotData = [];
     humidityPlotData = [];
     windspdPlotData = [];
     winddirPlotData = [];
     weatherData.forEach (function (data) {
+        rainfallPlotData.push([data.recDateTime, data.rainfall]);
         tempPlotData.push([data.recDateTime, data.temp]);
         humidityPlotData.push([data.recDateTime, data.humidity]);
         windspdPlotData.push([data.recDateTime, data.windspd]);
@@ -763,6 +765,20 @@ function plotWeatherData(weatherData) {
     }
 
     if( typeof ($.plot) !== 'undefined') {
+        if ($("#rainfall_plot").length){
+            $.plot( $("#rainfall_plot"),
+                [{
+                    label: "Rainfall",
+                    data: rainfallPlotData,
+                    lines: {
+                        fillColor: "rgba(150, 202, 89, 0.12)"
+                    },
+                    points: {
+                        fillColor: "#fff" }
+                }], plotSettings);
+
+        }
+
         if ($("#temp_plot").length){
             $.plot( $("#temp_plot"),
                 [{
@@ -780,7 +796,7 @@ function plotWeatherData(weatherData) {
         if ($("#humidity_plot").length){
             $.plot( $("#humidity_plot"),
                 [{
-                    label: "Humidity",
+                    label: "Relative Humidity",
                     data: humidityPlotData,
                     lines: {
                         fillColor: "rgba(150, 202, 89, 0.12)"
