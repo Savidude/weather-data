@@ -270,6 +270,38 @@ app2.controller('stations', function ($scope, $http) {
         });
     };
 
+    $scope.deleteStation = function (station) {
+        var modal =
+            '<div class="modal fade" role="dialog" id="deleteStationModal">' +
+                '<div class="modal-dialog">' +
+                    '<div class="modal-content">' +
+                        '<div class="modal-header">' +
+                            '<button type="button" class="close" data-dismiss="modal">x</button>' +
+                            '<h4 class="modal-title">Delete ' + station.name + '?</h4>' +
+                        '</div>' +
+                    '<div class="modal-body">' +
+                        '<p>Are you sure you want to delete this weather station?</p>' +
+                    '</div>' +
+                    '<div class="modal-footer">' +
+                        '<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>' +
+                        '<button type="button" class="btn btn-danger" data-dismiss="modal" ' +
+                        'onclick="deleteStation(\'' + station.id + '\', \''+ station.key + '\')">Delete</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+
+        var modal_div = document.createElement('div');
+        modal_div.innerHTML = modal;
+        var weather_station_data_div = document.getElementById('weather-station-data');
+        weather_station_data_div.appendChild(modal_div);
+
+        $('#deleteStationModal').modal('show');
+        $("#deleteStationModal").on("hidden.bs.modal", function () {
+            modal_div.remove();
+        });
+    };
+
     function isFloat(n){
         return Number(n) === n && n % 1 !== 0;
     }
@@ -293,6 +325,15 @@ function editStationData(id) {
         data: JSON.stringify(station),
         success: function (result) {
             location.reload()
+        }
+    });
+}
+
+function deleteStation(id, key) {
+    var url = "/data/delete/station/id/" + id + "/key/" + key;
+    $.get(url, function (data, status) {
+        if (status === 'success') {
+            location.reload();
         }
     });
 }

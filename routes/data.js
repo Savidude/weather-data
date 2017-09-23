@@ -287,9 +287,40 @@ router.post('/update/station', function (req, res) {
                             db.close;
                             res.status(500).send();
                         } else {
-                            res.status(200).json(result2);
+                            res.status(200).send();
                         }
                     });
+                }
+            });
+        }
+    });
+});
+
+router.get('/delete/station/id/:id/key/:key', function (req, res) {
+    var wsid = req.params.id;
+    var key = req.params.key;
+
+    //Create MongoDB client and connect to it
+    var mongoClient = mongodb.MongoClient;
+    var contents = fs.readFileSync("routes/config.json");
+    var jsonContent = JSON.parse(contents);
+    var mongoDBUrl= jsonContent.mongoDBUrl;
+
+    mongoClient.connect(mongoDBUrl, function (err, db) {
+        if (err) {
+            logger.error("Unable to connect to the Database", err);
+            db.close;
+            res.status(500).send();
+        } else {
+            var weatherStation = db.collection('WeatherStation');
+            var query = {"id": wsid, "key": key};
+            weatherStation.deleteOne(query, function (err, result) {
+                if (err) {
+                    logger.error("Unable to delete weather station", err);
+                    db.close;
+                    res.status(500).send();
+                } else {
+                    res.status(200).send();
                 }
             });
         }
