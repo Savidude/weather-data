@@ -357,4 +357,35 @@ router.get('/delete/station/id/:id/key/:key', function (req, res) {
     });
 });
 
+router.post('/download', function (req, res) {
+    var data = req.body;
+
+    var json2csv = require('json2csv');
+    var fs = require('fs');
+    var fields = ['recDateTime', 'temp', 'humidity', 'rainfall', 'windspd', 'winddir'];
+    var csv = json2csv({data: data, fields: fields});
+
+    fs.writeFile('data/weatherData.csv', csv, function(err) {
+        if (err) {
+            logger.error("Error while creating .csv file", err);
+            throw err;
+        } else {
+            logger.info(".csv file created");
+            res.status(200).send();
+        }
+    });
+});
+
+router.get('/download', function (req, res ) {
+    var filepath = __dirname + '/../data/weatherData.csv';
+    console.log(filepath)
+    res.download(filepath, 'weatherData.csv', function (err) {
+        if( err ) {
+            logger.error("Error while downloading CSV file", err)
+        } else {
+            logger.info(".csv file downloaded");
+        }
+    });
+});
+
 module.exports = router;

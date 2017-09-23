@@ -259,6 +259,7 @@ function initTimeRange(today) {
     }
 }
 
+var weatherDataArray;
 $(document).ready(function() {
     wsid = document.getElementById('station-id').value;
 
@@ -293,6 +294,7 @@ app3.controller('stations', function ($scope, $http) {
 });
 
 function plotWeatherData(weatherData) {
+    weatherDataArray = weatherData;
     var tableBody = document.getElementById('weatherData');
     tableBody.innerHTML = '';
     weatherData.forEach (function (data) {
@@ -331,5 +333,17 @@ function plotWeatherData(weatherData) {
         row.appendChild(winddirData);
 
         tableBody.appendChild(row);
+    });
+}
+
+function downloadCSV() {
+    $.ajax({
+        type: "POST",
+        contentType: 'application/json',
+        url: "/data/download",
+        data: JSON.stringify(weatherDataArray),
+        success: function (result) {
+            window.location = '/data/download';
+        }
     });
 }
