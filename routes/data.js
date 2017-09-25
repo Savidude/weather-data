@@ -43,7 +43,6 @@ router.get('/stations', function(req, res) {
     mongoClient.connect(mongoDBUrl, function (err, db) {
         if (err) {
             logger.error("Unable to connect to the Database", err);
-            db.close;
             res.status(500).send();
         } else {
             var weatherData = db.collection('WeatherData');
@@ -58,7 +57,6 @@ router.get('/stations', function(req, res) {
             weatherData.aggregate(query, function (err, result) {
                 if (err) {
                     logger.error("Error while querying weather data", err);
-                    db.close;
                     res.status(500).send();
                     throw err;
                 } else {
@@ -74,7 +72,6 @@ router.get('/stations', function(req, res) {
                         weatherStation.findOne(weatherStationQuery[0], weatherStationQuery[1], function (err, weatherStationResult) {
                             if (err) {
                                 logger.error("Error while querying weather data", err);
-                                db.close;
                                 res.status(500).send();
                                 throw err;
                             } else {
@@ -90,7 +87,6 @@ router.get('/stations', function(req, res) {
                                     findStationData(weatherData, weatherDataQuery, function (err, weatherDataResult) {
                                         if (err) {
                                             logger.error("Error while querying weather data", err);
-                                            db.close;
                                             res.status(500).send();
                                             throw err;
                                         } else {
@@ -148,7 +144,6 @@ router.get('/station/:id', function (req, res) {
     mongoClient.connect(mongoDBUrl, function (err, db) {
         if (err) {
             logger.error("Unable to connect to the Database", err);
-            db.close;
             res.status(500).send();
         } else {
             var weatherStation = db.collection('WeatherStation');
@@ -156,9 +151,9 @@ router.get('/station/:id', function (req, res) {
             weatherStation.findOne(query[0], query[1], function (err, result) {
                 if (err) {
                     logger.error("Unable find weather station name", err);
-                    db.close;
                     res.status(500).send();
                 } else {
+                    db.close();
                     res.status(200).json(result);
                 }
             })
@@ -183,7 +178,6 @@ router.get('/stations/:id', function (req, res) {
     mongoClient.connect(mongoDBUrl, function (err, db) {
         if (err) {
             logger.error("Unable to connect to the Database", err);
-            db.close;
             res.status(500).send();
         } else {
             var weatherData = db.collection('WeatherData');
@@ -192,9 +186,9 @@ router.get('/stations/:id', function (req, res) {
             weatherData.find(query[0], query[1]).toArray(function (err, result) {
                 if (err) {
                     logger.error("Unable to connect to query from database", err);
-                    db.close;
                     res.status(500).send();
                 } else {
+                    db.close();
                     res.status(200).json(result);
                 }
             });
@@ -212,7 +206,6 @@ router.get('/all/stations', function (req, res) {
     mongoClient.connect(mongoDBUrl, function (err, db) {
         if (err) {
             logger.error("Unable to connect to the Database", err);
-            db.close;
             res.status(500).send();
         } else {
             var weatherStation = db.collection('WeatherStation');
@@ -220,9 +213,9 @@ router.get('/all/stations', function (req, res) {
             weatherStation.find().sort(sortquery).toArray(function (err, result) {
                 if (err) {
                     logger.error("Unable to connect to query from database", err);
-                    db.close;
                     res.status(500).send();
                 } else {
+                    db.close();
                     res.status(200).json(result);
                 }
             });
@@ -265,16 +258,15 @@ router.get('/create/stations', function (req, res) {
     mongoClient.connect(mongoDBUrl, function (err, db) {
         if (err) {
             logger.error("Unable to connect to the Database", err);
-            db.close;
             res.status(500).send();
         } else {
             var weatherStation = db.collection('WeatherStation');
             weatherStation.insertOne(stationData, function (err, result) {
                 if (err) {
                     logger.error("Unable to insert weather data to database", err);
-                    db.close;
                     res.status(500).send();
                 } else {
+                    db.close();
                     res.status(201).json(stationData);
                 }
             });
@@ -294,7 +286,6 @@ router.post('/update/station', function (req, res) {
     mongoClient.connect(mongoDBUrl, function (err, db) {
         if (err) {
             logger.error("Unable to connect to the Database", err);
-            db.close;
             res.status(500).send();
         } else {
             var weatherStation = db.collection('WeatherStation');
@@ -304,7 +295,6 @@ router.post('/update/station', function (req, res) {
             weatherStation.findOne(findQuery[0], findQuery[1], function (err, result) {
                 if (err) {
                     logger.error("Unable to find station while updating.", err);
-                    db.close;
                     res.status(500).send();
                 } else {
                     result.name = stationData.name;
@@ -318,9 +308,9 @@ router.post('/update/station', function (req, res) {
                     weatherStation.updateOne(updateQuery, result, function (err, result2) {
                         if (err) {
                             logger.error("Unable to update station", err);
-                            db.close;
                             res.status(500).send();
                         } else {
+                            db.close();
                             res.status(200).send();
                         }
                     });
@@ -343,7 +333,6 @@ router.get('/delete/station/id/:id/key/:key', function (req, res) {
     mongoClient.connect(mongoDBUrl, function (err, db) {
         if (err) {
             logger.error("Unable to connect to the Database", err);
-            db.close;
             res.status(500).send();
         } else {
             var weatherStation = db.collection('WeatherStation');
@@ -351,9 +340,9 @@ router.get('/delete/station/id/:id/key/:key', function (req, res) {
             weatherStation.deleteOne(query, function (err, result) {
                 if (err) {
                     logger.error("Unable to delete weather station", err);
-                    db.close;
                     res.status(500).send();
                 } else {
+                    db.close();
                     res.status(200).send();
                 }
             });

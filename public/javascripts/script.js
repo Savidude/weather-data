@@ -314,6 +314,7 @@ function gd(year, month, day) {
     return new Date(year, month - 1, day).getTime();
 }
 
+var rainfallPlotData = [];
 var tempPlotData = [];
 var humidityPlotData = [];
 var windspdPlotData = [];
@@ -365,7 +366,7 @@ function init_flot_chart(){
             width: 40,
             height: 1
         },
-        colors: ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'],
+        colors: ['#96CA59'],
         shadowSize: 0,
         tooltip: true,
         tooltipOpts: {
@@ -777,6 +778,7 @@ function plotWeatherData(weatherData) {
 
     if( typeof ($.plot) !== 'undefined') {
         if ($("#rainfall_plot").length){
+            plotSettings.colors[0] = '#96CA59';
             $.plot( $("#rainfall_plot"),
                 [{
                     label: "Rainfall",
@@ -791,12 +793,13 @@ function plotWeatherData(weatherData) {
         }
 
         if ($("#temp_plot").length){
+            plotSettings.colors[0] = '#EF5350';
             $.plot( $("#temp_plot"),
                 [{
                     label: "Temperature",
                     data: tempPlotData,
                     lines: {
-                        fillColor: "rgba(150, 202, 89, 0.12)"
+                        fillColor: "rgba(239, 83, 80, 0.12)"
                     },
                     points: {
                         fillColor: "#fff" }
@@ -805,12 +808,13 @@ function plotWeatherData(weatherData) {
         }
 
         if ($("#humidity_plot").length){
+            plotSettings.colors[0] = '#03A9F4';
             $.plot( $("#humidity_plot"),
                 [{
                     label: "Relative Humidity",
                     data: humidityPlotData,
                     lines: {
-                        fillColor: "rgba(150, 202, 89, 0.12)"
+                        fillColor: "rgba(3, 169, 244, 0.12)"
                     },
                     points: {
                         fillColor: "#fff" }
@@ -819,12 +823,13 @@ function plotWeatherData(weatherData) {
         }
 
         if ($("#windspd_plot").length){
+            plotSettings.colors[0] = '#FF9800';
             $.plot( $("#windspd_plot"),
                 [{
                     label: "Wind Speed",
                     data: windspdPlotData,
                     lines: {
-                        fillColor: "rgba(150, 202, 89, 0.12)"
+                        fillColor: "rgba(255, 152, 0, 0.12)"
                     },
                     points: {
                         fillColor: "#fff" }
@@ -833,12 +838,13 @@ function plotWeatherData(weatherData) {
         }
 
         if ($("#winddir_plot").length){
+            plotSettings.colors[0] = '#009688';
             $.plot( $("#winddir_plot"),
                 [{
                     label: "Wind Direction",
                     data: winddirPlotData,
                     lines: {
-                        fillColor: "rgba(150, 202, 89, 0.12)"
+                        fillColor: "rgba(0, 150, 136, 0.12)"
                     },
                     points: {
                         fillColor: "#fff" }
