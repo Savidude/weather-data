@@ -358,7 +358,11 @@ body .container.body .right_col {
   float: left;
   background: #2A3F54;
   border-radius: 0;
-  height: 57px
+  height: 130px
+}
+.img-logo {
+  width: 60px;
+  margin-top: 12px;
 }
 @media (max-width: 991px) {
   .nav-md .container.body .right_col,
@@ -815,7 +819,7 @@ a:focus {
   margin-left: 0 !important;
   line-height: 59px;
   display: block;
-  height: 55px;
+  height: 150px;
   margin: 0;
   padding-left: 10px
 }

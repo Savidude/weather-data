@@ -658,19 +658,28 @@ app1.controller('stations', function ($scope, $http) {
             });
             google.charts.setOnLoadCallback(drawChart);
             function drawChart() {
-                var stationDataArray = [['Lat', 'Lon', 'Name']];
+                var stationDataArray = [['Lat', 'Lon', 'Name', 'Marker']];
                 weatherStationDataLatest.forEach (function (station) {
-                    var stationData = [station.lat, station.lon, getWeatherDataInfoWindow(station).outerHTML];
+                    var stationData = [station.lat, station.lon, getWeatherDataInfoWindow(station).outerHTML,
+                        station.temp.toString()];
                     stationDataArray.push(stationData);
                 });
 
                 var data = google.visualization.arrayToDataTable(stationDataArray);
                 var map = new google.visualization.Map(document.getElementById('map_div'));
-                map.draw(data, {
-                    showTooltip: false,
-                    showInfoWindow: true,
-                    useMapTypeControl: true
-                });
+                var icons = {};
+                for (var i = 10; i < 40; i++) {
+                    icons[i] = {};
+                    icons[i].normal = '/images/markers/' + i + '.png';
+                    icons[i].selected = '/images/markers/' + i + '.png';
+                }
+                var options = {};
+                options.showTooltip = false;
+                options.showInfoWindow = true;
+                options.useMapTypeControl = true;
+                options.icons = icons;
+
+                map.draw(data, options);
             }
         }
     });
