@@ -260,6 +260,7 @@ function initTimeRange(today) {
 }
 
 var weatherDataArray;
+var stationName;
 $(document).ready(function() {
     wsid = document.getElementById('station-id').value;
 
@@ -287,8 +288,8 @@ app3.controller('stations', function ($scope, $http) {
     var url = "/data/station/" + wsid;
     $http.get(url).then(function (response) {
         if (response.status === 200) {
-            var name = response.data.name;
-            document.getElementById('station-name').innerHTML = name + " Weather Data";
+            stationName = response.data.name;
+            document.getElementById('station-name').innerHTML = stationName + " Weather Data";
         }
     });
 });
@@ -343,7 +344,8 @@ function downloadCSV() {
         url: "/data/download",
         data: JSON.stringify(weatherDataArray),
         success: function (result) {
-            window.location = '/data/download';
+            console.log(JSON.stringify(result));
+            window.location = '/data/download?filename=' + stationName;
         }
     });
 }

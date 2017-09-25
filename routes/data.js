@@ -381,9 +381,10 @@ router.post('/download', function (req, res) {
 });
 
 router.get('/download', function (req, res ) {
+    var data = req.query;
+    var filename = data.filename + "WeatherData.csv";
     var filepath = __dirname + '/../data/weatherData.csv';
-    console.log(filepath)
-    res.download(filepath, 'weatherData.csv', function (err) {
+    res.download(filepath, filename, function (err) {
         if( err ) {
             logger.error("Error while downloading CSV file", err)
         } else {
