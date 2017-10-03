@@ -408,7 +408,6 @@ var endTimestamp = moment().add(1, 'days');
 function init_daterangepicker() {
 
     if( typeof ($.fn.daterangepicker) === 'undefined'){ return; }
-    console.log('init_daterangepicker');
 
     var cb = function(start, end, label) {
         console.log(start.toISOString(), end.toISOString(), label);
@@ -430,7 +429,7 @@ function init_daterangepicker() {
         timePicker12Hour: true,
         ranges: {
             'Today': [moment(), moment().add(1, 'days')],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Yesterday': [moment().subtract(1, 'days'), moment()],
             'Last 7 Days': [moment().subtract(6, 'days'), moment()],
             'Last 30 Days': [moment().subtract(29, 'days'), moment()],
             'This Month': [moment().startOf('month'), moment().endOf('month')],
@@ -529,6 +528,9 @@ function initTimeRange(today) {
 }
 
 $(document).ready(function() {
+    var user_type = document.getElementById('user_type').value;
+    getUserDisplays(user_type);
+
     init_flot_chart();
     init_sidebar();
     init_daterangepicker();
@@ -537,6 +539,16 @@ $(document).ready(function() {
 
     document.getElementById('data-plot').style.visibility = 'hidden';
 });
+
+function getUserDisplays(user_type) {
+    if (user_type === 'guest') {
+        document.getElementById('admin-menu').style.visibility = 'hidden';
+    } else if (user_type === 'admin') {
+        document.getElementById('admin-menu').style.visibility = 'block';
+    } else if (user_type === 'superadmin') {
+        document.getElementById('admin-menu').style.visibility = 'block';
+    }
+}
 
 var app1 = angular.module('app1', []);
 var weatherStationDataLatest;

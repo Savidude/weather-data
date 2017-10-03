@@ -141,10 +141,36 @@ function init_sidebar() {
 // /Sidebar
 
 $(document).ready(function() {
+    var user_type = document.getElementById('user_type').value;
+    getUserDisplays(user_type);
+
     init_sidebar();
 });
 
-var app2 = angular.module('app2', []);
+function getUserDisplays(user_type) {
+    if (user_type !== 'superadmin') {
+        var addStationButton = document.getElementById('addStationButton');
+        addStationButton.parentNode.removeChild(addStationButton);
+
+        var addStationModal = document.getElementById('addStationModal');
+        addStationModal.parentNode.removeChild(addStationModal);
+    }
+}
+
+var app2 = angular.module('app2', [])
+    .directive('postRepeatDirective', function () {
+        return function(scope, element, attrs) {
+            if (scope.$last){
+                var user_type = document.getElementById('user_type').value;
+                if (user_type !== 'superadmin') {
+                    var stationActionButtons = document.getElementsByClassName('station-actions');
+                    while (stationActionButtons.length > 0) {
+                        stationActionButtons[0].parentNode.removeChild(stationActionButtons[0]);
+                    }
+                }
+            }
+        };
+    });
 var weatherStationDataLatest;
 var weatherStationDataLatestTemp;
 
@@ -184,12 +210,7 @@ app2.controller('stations', function ($scope, $http) {
       var phone = document.getElementById('phone').value;
       var sim = document.getElementById('sim').value;
 
-      // if (!isFloat(lat) || !isFloat(lon)) {
-      //     alert ("Invalid Latitude or Longitude value");
-      //     return;
-      // }
-
-      var user = "Guest"; //TODO: Get the correct user
+      var user = document.getElementById('user_name').value;
 
       var url = "/data/create/stations?name=" + name + "&lat=" + lat + "&lon=" + lon + "&email=" + email + "&phone=" + phone +
       "&sim=" + sim + "&user=" + user;

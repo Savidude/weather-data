@@ -21,6 +21,8 @@
     </head>
 
     <body class="nav-md">
+        <input type="hidden" id="user_type" value="{{type}}">
+        <input type="hidden" id="user_name" value="{{username}}">
         <div class="container body">
             <div class="main_container">
                 <div class="col-md-3 left_col">
@@ -38,7 +40,7 @@
                             </div>
                             <div class="profile_info">
                                 <span>Welcome,</span>
-                                <h2>Guest</h2>
+                                <h2>{{name}}</h2>
                             </div>
                         </div>
                         <!-- /menu profile quick info -->
@@ -96,19 +98,11 @@
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="">
                                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <img src="images/guest.png" alt="">Guest
+                                        <img src="images/guest.png" alt="">{{username}}
                                         <span class=" fa fa-angle-down"></span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                        <li><a href="javascript:;"> Profile</a></li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                <span class="badge bg-red pull-right">50%</span>
-                                                <span>Settings</span>
-                                            </a>
-                                        </li>
-                                        <li><a href="javascript:;">Help</a></li>
-                                        <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log In</a></li>
+                                        <li><a href="/login"><i class="fa fa-sign-out pull-right"></i> Log In</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -137,7 +131,7 @@
                                         <div class="row">
                                             <div class="add_station">
                                                 <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                        data-target="#addStationModal">
+                                                        data-target="#addStationModal" id="addStationButton">
                                                     <i class="fa fa-plus" aria-hidden="true"></i> Add Station
                                                 </button>
                                             </div>
@@ -193,7 +187,8 @@
 
                                             <div id="weather-station-data">
                                                 <div ng-repeat="s in stations"
-                                                     class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                     class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12"
+                                                     post-repeat-directive>
                                                     <div class="tile-stats">
                                                         <div class="count"><span ng-bind="s.name"></span></div>
                                                         <div>

@@ -1,5 +1,13 @@
 var express = require('express');
+var session = require('express-session');
 var router = express.Router();
+
+router.use(session({
+    secret: 'dg9LEugPw659nR82',
+    resave: false,
+    saveUninitialized: true,
+}));
+
 var mongodb = require('mongodb');
 var fs = require('fs');
 
@@ -224,130 +232,166 @@ router.get('/all/stations', function (req, res) {
 });
 
 router.get('/create/stations', function (req, res) {
-    var data = req.query;
+    var key = req.session.key;
+    if (key === undefined) {
+        res.status(401).send();
+    } else {
+        validateKey(key, function (result) {
+            var user_type = result.user_type;
+            if (user_type === 'superadmin') {
+                var data = req.query;
 
-    var stationData = {};
-    stationData.name = data.name;
-    stationData.lat = parseFloat(data.lat);
-    stationData.lon = parseFloat(data.lon);
-    stationData.added_by = data.user;
-    stationData.notify_email = data.email;
-    stationData.notify_phone = data.phone;
-    stationData.sim = data.sim;
-    stationData.status = "Active";
+                var stationData = {};
+                stationData.name = data.name;
+                stationData.lat = parseFloat(data.lat);
+                stationData.lon = parseFloat(data.lon);
+                stationData.added_by = data.user;
+                stationData.notify_email = data.email;
+                stationData.notify_phone = data.phone;
+                stationData.sim = data.sim;
+                stationData.status = "Active";
 
-    var token = require('rand-token').uid;
-    stationData.id = token(8);
-    stationData.key = token(8);
+                var token = require('rand-token').uid;
+                stationData.id = token(8);
+                stationData.key = token(8);
 
-    var today = new Date();
-    var dateTime = today.getDate() + "/"
-        + (today.getMonth()+1)  + "/"
-        + today.getFullYear() + " "
-        + today.getHours() + ":"
-        + (today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes()) + ":"
-        + (today.getSeconds() < 10 ? '0' + today.getSeconds() : today.getSeconds());
-    stationData.added_date_time = dateTime;
+                var today = new Date();
+                var dateTime = today.getDate() + "/"
+                    + (today.getMonth()+1)  + "/"
+                    + today.getFullYear() + " "
+                    + today.getHours() + ":"
+                    + (today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes()) + ":"
+                    + (today.getSeconds() < 10 ? '0' + today.getSeconds() : today.getSeconds());
+                stationData.added_date_time = dateTime;
 
-    //Create MongoDB client and connect to it
-    var mongoClient = mongodb.MongoClient;
-    var contents = fs.readFileSync("routes/config.json");
-    var jsonContent = JSON.parse(contents);
-    var mongoDBUrl= jsonContent.mongoDBUrl;
+                //Create MongoDB client and connect to it
+                var mongoClient = mongodb.MongoClient;
+                var contents = fs.readFileSync("routes/config.json");
+                var jsonContent = JSON.parse(contents);
+                var mongoDBUrl= jsonContent.mongoDBUrl;
 
-    mongoClient.connect(mongoDBUrl, function (err, db) {
-        if (err) {
-            logger.error("Unable to connect to the Database", err);
-            res.status(500).send();
-        } else {
-            var weatherStation = db.collection('WeatherStation');
-            weatherStation.insertOne(stationData, function (err, result) {
-                if (err) {
-                    logger.error("Unable to insert weather data to database", err);
-                    res.status(500).send();
-                } else {
-                    db.close();
-                    res.status(201).json(stationData);
-                }
-            });
-        }
-    });
+                mongoClient.connect(mongoDBUrl, function (err, db) {
+                    if (err) {
+                        logger.error("Unable to connect to the Database", err);
+                        res.status(500).send();
+                    } else {
+                        var weatherStation = db.collection('WeatherStation');
+                        weatherStation.insertOne(stationData, function (err, result) {
+                            if (err) {
+                                logger.error("Unable to insert weather data to database", err);
+                                res.status(500).send();
+                            } else {
+                                db.close();
+                                res.status(201).json(stationData);
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.status(401).send();
+            }
+        });
+    }
 });
 
 router.post('/update/station', function (req, res) {
-    var stationData = req.body;
+    var key = req.session.key;
+    if (key === undefined) {
+        res.status(401).send();
+    } else {
+        validateKey(key, function (result) {
+            var user_type = result.user_type;
+            if (user_type === 'superadmin') {
+                var stationData = req.body;
 
-    //Create MongoDB client and connect to it
-    var mongoClient = mongodb.MongoClient;
-    var contents = fs.readFileSync("routes/config.json");
-    var jsonContent = JSON.parse(contents);
-    var mongoDBUrl= jsonContent.mongoDBUrl;
+                //Create MongoDB client and connect to it
+                var mongoClient = mongodb.MongoClient;
+                var contents = fs.readFileSync("routes/config.json");
+                var jsonContent = JSON.parse(contents);
+                var mongoDBUrl= jsonContent.mongoDBUrl;
 
-    mongoClient.connect(mongoDBUrl, function (err, db) {
-        if (err) {
-            logger.error("Unable to connect to the Database", err);
-            res.status(500).send();
-        } else {
-            var weatherStation = db.collection('WeatherStation');
-            var findQuery = [{"id": stationData.id},
-                {"_id": 0, "name": 1, "id": 1, "key": 1, "lat": 1, "lon": 1, "added_by": 1, "notify_email": 1,
-                    "notify_phone": 1, "sim": 1, "status": 1, "added_date_time": 1}];
-            weatherStation.findOne(findQuery[0], findQuery[1], function (err, result) {
-                if (err) {
-                    logger.error("Unable to find station while updating.", err);
-                    res.status(500).send();
-                } else {
-                    result.name = stationData.name;
-                    result.lat = stationData.lat;
-                    result.lon = stationData.lon;
-                    result.notify_email = stationData.email;
-                    result.notify_phone = stationData.phone;
-                    result.sim = stationData.sim;
+                mongoClient.connect(mongoDBUrl, function (err, db) {
+                    if (err) {
+                        logger.error("Unable to connect to the Database", err);
+                        res.status(500).send();
+                    } else {
+                        var weatherStation = db.collection('WeatherStation');
+                        var findQuery = [{"id": stationData.id},
+                            {"_id": 0, "name": 1, "id": 1, "key": 1, "lat": 1, "lon": 1, "added_by": 1, "notify_email": 1,
+                                "notify_phone": 1, "sim": 1, "status": 1, "added_date_time": 1}];
+                        weatherStation.findOne(findQuery[0], findQuery[1], function (err, result) {
+                            if (err) {
+                                logger.error("Unable to find station while updating.", err);
+                                res.status(500).send();
+                            } else {
+                                result.name = stationData.name;
+                                result.lat = stationData.lat;
+                                result.lon = stationData.lon;
+                                result.notify_email = stationData.email;
+                                result.notify_phone = stationData.phone;
+                                result.sim = stationData.sim;
 
-                    var updateQuery = {"id": stationData.id};
-                    weatherStation.updateOne(updateQuery, result, function (err, result2) {
-                        if (err) {
-                            logger.error("Unable to update station", err);
-                            res.status(500).send();
-                        } else {
-                            db.close();
-                            res.status(200).send();
-                        }
-                    });
-                }
-            });
-        }
-    });
+                                var updateQuery = {"id": stationData.id};
+                                weatherStation.updateOne(updateQuery, result, function (err, result2) {
+                                    if (err) {
+                                        logger.error("Unable to update station", err);
+                                        res.status(500).send();
+                                    } else {
+                                        db.close();
+                                        res.status(200).send();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.status(401).send();
+            }
+        });
+    }
 });
 
 router.get('/delete/station/id/:id/key/:key', function (req, res) {
-    var wsid = req.params.id;
-    var key = req.params.key;
+    var key = req.session.key;
+    if (key === undefined) {
+        res.status(401).send();
+    } else {
+        validateKey(key, function (result) {
+            var user_type = result.user_type;
+            if (user_type === 'superadmin') {
+                var wsid = req.params.id;
+                var key = req.params.key;
 
-    //Create MongoDB client and connect to it
-    var mongoClient = mongodb.MongoClient;
-    var contents = fs.readFileSync("routes/config.json");
-    var jsonContent = JSON.parse(contents);
-    var mongoDBUrl= jsonContent.mongoDBUrl;
+                //Create MongoDB client and connect to it
+                var mongoClient = mongodb.MongoClient;
+                var contents = fs.readFileSync("routes/config.json");
+                var jsonContent = JSON.parse(contents);
+                var mongoDBUrl= jsonContent.mongoDBUrl;
 
-    mongoClient.connect(mongoDBUrl, function (err, db) {
-        if (err) {
-            logger.error("Unable to connect to the Database", err);
-            res.status(500).send();
-        } else {
-            var weatherStation = db.collection('WeatherStation');
-            var query = {"id": wsid, "key": key};
-            weatherStation.deleteOne(query, function (err, result) {
-                if (err) {
-                    logger.error("Unable to delete weather station", err);
-                    res.status(500).send();
-                } else {
-                    db.close();
-                    res.status(200).send();
-                }
-            });
-        }
-    });
+                mongoClient.connect(mongoDBUrl, function (err, db) {
+                    if (err) {
+                        logger.error("Unable to connect to the Database", err);
+                        res.status(500).send();
+                    } else {
+                        var weatherStation = db.collection('WeatherStation');
+                        var query = {"id": wsid, "key": key};
+                        weatherStation.deleteOne(query, function (err, result) {
+                            if (err) {
+                                logger.error("Unable to delete weather station", err);
+                                res.status(500).send();
+                            } else {
+                                db.close();
+                                res.status(200).send();
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.status(401).send();
+            }
+        });
+    }
 });
 
 router.post('/download', function (req, res) {
@@ -382,4 +426,72 @@ router.get('/download', function (req, res ) {
     });
 });
 
+router.post('/login', function (req, res) {
+    var userData = req.body;
+
+    //Create MongoDB client and connect to it
+    var mongoClient = mongodb.MongoClient;
+    var contents = fs.readFileSync("routes/config.json");
+    var jsonContent = JSON.parse(contents);
+    var mongoDBUrl= jsonContent.mongoDBUrl;
+
+    mongoClient.connect(mongoDBUrl, function (err, db) {
+        if (err) {
+            logger.error("Unable to connect to the Database", err);
+            res.status(500).send();
+        } else {
+            var users = db.collection('users');
+            var findQuery = [{"username": userData.username, "password": userData.password},
+                {"_id": 0, "key": 1}];
+            users.findOne(findQuery[0], findQuery[1], function (err, result) {
+                if (err) {
+                    logger.error("Error while trying to login", err);
+                    res.status(500).send();
+                } else {
+                    if (result === null) {
+                        db.close();
+                        res.status(401).send();
+                    } else {
+                        var hour = 3600000;
+                        req.session.cookie.expires = new Date(Date.now() + hour);
+                        req.session.cookie.maxAge = hour;
+
+                        req.session.key = result.key;
+                        var response = {};
+                        response.status = 200;
+                        db.close();
+                        res.status(200).json(response);
+                    }
+                }
+            });
+        }
+    });
+});
+
 module.exports = router;
+
+function validateKey(key, callback) {
+    //Create MongoDB client and connect to it
+    var mongoClient = mongodb.MongoClient;
+    var contents = fs.readFileSync("routes/config.json");
+    var jsonContent = JSON.parse(contents);
+    var mongoDBUrl= jsonContent.mongoDBUrl;
+
+    mongoClient.connect(mongoDBUrl, function (err, db) {
+        if (err) {
+            logger.error("Unable to connect to the Database", err);
+        } else {
+            var users = db.collection('users');
+            var findQuery = [{"key": key},
+                {"_id": 0, "user_type": 1}];
+            users.findOne(findQuery[0], findQuery[1], function (err, result) {
+                if (err) {
+                    logger.error("Error while trying to get user data", err);
+                } else {
+                    callback(result);
+                    db.close();
+                }
+            });
+        }
+    });
+}
