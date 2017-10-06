@@ -341,6 +341,9 @@ function init_flot_chart(){
             autoHighlight: true,
             mouseActiveRadius: 100
         },
+        tooltip : {
+            show: true
+        },
         series: {
             lines: {
                 show: true,
@@ -350,9 +353,9 @@ function init_flot_chart(){
             },
             points: {
                 show: true,
-                radius: 4.5,
+                radius: 3.5,
                 symbol: "circle",
-                lineWidth: 3.0
+                lineWidth: 2.0
             }
         },
         legend: {
@@ -470,6 +473,7 @@ function init_daterangepicker() {
         if (today.toDateString() === startDate.toDateString()) {
             initTimeRange(today);
             plotSettings.xaxis.timeformat = "%I:%M %p";
+            plotSettings.series.points.show = true;
         } else if (yesterday.toDateString() === startDate.toDateString()) {
             yesterday.setHours(8);
             startTimestamp = yesterday.getTime();
@@ -478,11 +482,13 @@ function init_daterangepicker() {
             endTimestamp = today.getTime();
 
             plotSettings.xaxis.timeformat = "%I:%M %p";
+            plotSettings.series.points.show = true;
         } else {
             startTimestamp = picker.startDate;
             endTimestamp = picker.endDate;
 
             plotSettings.xaxis.timeformat = "%y/%m/%d";
+            plotSettings.series.points.show = false;
         }
 
         $.ajax({
