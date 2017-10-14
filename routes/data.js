@@ -460,6 +460,7 @@ router.post('/login', function (req, res) {
                         var response = {};
                         response.status = 200;
                         db.close();
+                        console.log(JSON.stringify(response, null, 2));
                         res.status(200).json(response);
                     }
                 }

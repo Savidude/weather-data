@@ -42,13 +42,13 @@ var logger = new (winston.Logger)({
 router.get('/', function(req, res, next) {
     var key = req.session.key;
     if (key === undefined) {
-        res.render('index', { title: 'Weather Data', username: 'Guest', name: 'Guest', type: 'guest' });
+        res.render('index', { title: 'Sanasa Insurance Weather Network', username: 'Guest', name: 'Guest', type: 'guest' });
     } else {
         validateKey(key, function (result) {
             if (result === null) {
-                res.render('index', { title: 'Weather Data', username: 'Guest', name: 'Guest', type: 'guest' });
+                res.render('index', { title: 'Sanasa Insurance Weather Network', username: 'Guest', name: 'Guest', type: 'guest' });
             } else {
-                res.render('index', { title: 'Weather Data', username: result.username, name: result.name, type: result.user_type });
+                res.render('index', { title: 'Sanasa Insurance Weather Network', username: result.username, name: result.name, type: result.user_type });
             }
         });
     }
@@ -63,7 +63,7 @@ router.get('/stations', function(req, res, next) {
         validateKey(key, function (result) {
             var user_type = result.user_type;
             if (user_type === 'admin' || user_type === 'superadmin') {
-                res.render('stations', { title: 'Weather Data', username: result.username, name: result.name, type: result.user_type });
+                res.render('stations', { title: 'Sanasa Insurance Weather Network', username: result.username, name: result.name, type: result.user_type });
             } else {
                 res.status(401).send();
             }
@@ -80,7 +80,7 @@ router.get('/station/:id', function(req, res, next) {
             var user_type = result.user_type;
             if (user_type === 'admin' || user_type === 'superadmin') {
                 var wsid = req.params.id;
-                res.render('station-info', { title: 'Weather Data', username: result.username, name: result.name,
+                res.render('station-info', { title: 'Sanasa Insurance Weather Network', username: result.username, name: result.name,
                     type: result.user_type, wsid: wsid });
             } else {
                 res.status(401).send();
@@ -91,7 +91,7 @@ router.get('/station/:id', function(req, res, next) {
 
 /* GET weather stations page. */
 router.get('/login', function(req, res, next) {
-    res.render('login', { title: 'Weather Data' });
+    res.render('login', { title: 'Sanasa Insurance Weather Network' });
 });
 
 module.exports = router;

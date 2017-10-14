@@ -373,7 +373,7 @@ function init_flot_chart(){
         shadowSize: 0,
         tooltip: true,
         tooltipOpts: {
-            content: "%s: %y.0 | Time: %x",
+            content: "%s: %y.0 <br> Time: %x",
             xDateFormat: "%d/%m %I:%M %p",
             shifts: {
                 x: -30,
@@ -595,8 +595,15 @@ app1.controller('stations', function ($scope, $http) {
             function drawChart() {
                 var stationDataArray = [['Lat', 'Lon', 'Name', 'Marker']];
                 weatherStationDataLatest.forEach (function (station) {
-                    var stationData = [station.lat, station.lon, getWeatherDataInfoWindow(station).outerHTML,
-                        station.temp.toString()];
+                    var lastRecordedTimeDifference = Date.now() - station.recDateTime;
+                    var stationData;
+                    if (lastRecordedTimeDifference < 1800000) {
+                        stationData = [station.lat, station.lon, getWeatherDataInfoWindow(station).outerHTML,
+                            station.temp.toString()];
+                    } else {
+                        stationData = [station.lat, station.lon, getWeatherDataInfoWindow(station).outerHTML,
+                            'warn'];
+                    }
                     stationDataArray.push(stationData);
                 });
 
@@ -608,6 +615,10 @@ app1.controller('stations', function ($scope, $http) {
                     icons[i].normal = '/images/markers/' + i + '.png';
                     icons[i].selected = '/images/markers/' + i + '.png';
                 }
+                icons['warn'] = {};
+                icons['warn'].normal = '/images/markers/warn.png';
+                icons['warn'].selected = '/images/markers/warn.png';
+
                 var options = {};
                 options.showTooltip = false;
                 options.showInfoWindow = true;
