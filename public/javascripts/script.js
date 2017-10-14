@@ -373,8 +373,8 @@ function init_flot_chart(){
         shadowSize: 0,
         tooltip: true,
         tooltipOpts: {
-            content: "%s: %y.0",
-            xDateFormat: "%d/%m",
+            content: "%s: %y.0 | Time: %x",
+            xDateFormat: "%d/%m %I:%M %p",
             shifts: {
                 x: -30,
                 y: -50
@@ -484,10 +484,10 @@ function init_daterangepicker() {
             plotSettings.xaxis.timeformat = "%I:%M %p";
             plotSettings.series.points.show = true;
         } else {
-            startTimestamp = picker.startDate;
+            startTimestamp = picker.startDate + 30600000;
             endTimestamp = picker.endDate;
 
-            plotSettings.xaxis.timeformat = "%y/%m/%d";
+            plotSettings.xaxis.timeformat = "%d/%m/%y";
             plotSettings.series.points.show = false;
         }
 
@@ -648,7 +648,7 @@ app1.controller('stations', function ($scope, $http) {
         humidity.innerHTML = 'Relative Humidity: ' + station.humidity + '%';
         row1.appendChild(humidity);
         var rainfall = document.createElement('td');
-        rainfall.innerHTML = 'Rainfall: ' + station.rainfall + 'mm';
+        rainfall.innerHTML = 'Rainfall (since 8.30 a.m.): ' + station.rainfall + 'mm';
         row1.appendChild(rainfall);
         weatherData.appendChild(row1);
         var row2 = document.createElement('tr');
