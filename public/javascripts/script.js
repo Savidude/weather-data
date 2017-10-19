@@ -549,10 +549,23 @@ $(document).ready(function() {
 function getUserDisplays(user_type) {
     if (user_type === 'guest') {
         document.getElementById('admin-menu').style.visibility = 'hidden';
+        document.getElementById('log-action').href = '/login';
     } else if (user_type === 'admin') {
         document.getElementById('admin-menu').style.visibility = 'block';
+        document.getElementById('log').innerHTML = 'Log Out';
+        document.getElementById('log-action').href = '';
+        document.getElementById('log-action').onclick = function () {
+            $.get('/data/logout', function(data, status) {
+            });
+        };
     } else if (user_type === 'superadmin') {
         document.getElementById('admin-menu').style.visibility = 'block';
+        document.getElementById('log').innerHTML = 'Log Out';
+        document.getElementById('log-action').href = '';
+        document.getElementById('log-action').onclick = function () {
+            $.get('/data/logout', function(data, status) {
+            });
+        };
     }
 }
 

@@ -469,6 +469,11 @@ router.post('/login', function (req, res) {
     });
 });
 
+router.get('/logout', function (req, res) {
+    req.session.key = undefined;
+    res.status(200).send();
+});
+
 module.exports = router;
 
 function validateKey(key, callback) {
