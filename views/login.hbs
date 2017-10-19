@@ -28,13 +28,15 @@
             <div class="login_wrapper">
                 <div class="animate form login_form">
                     <section class="login_content">
-                        <form>
+                        <div>
                             <h1>Login</h1>
                             <div>
-                                <input type="text" class="form-control" placeholder="Username" required="" id="username"/>
+                                <input type="text" class="form-control" placeholder="Username" required="" id="username"
+                                    onkeypress="return handle(event)"/>
                             </div>
                             <div>
-                                <input type="password" class="form-control" placeholder="Password" required="" id="password"/>
+                                <input type="password" class="form-control" placeholder="Password" required="" id="password"
+                                       onkeypress="return handle(event)"/>
                             </div>
                             <div>
                                 <button class="btn btn-default" onclick="login()">Log in</button>
@@ -55,7 +57,7 @@
                                     <p>©2017 All Rights Reserved</p>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </section>
                 </div>
 

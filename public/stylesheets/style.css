@@ -3562,9 +3562,13 @@ form:after {
   outline: none
 }
 #username {
+  margin-top: 12px;
+  margin-bottom: 12px;
   background-position: 10px 10px !important
 }
 #password {
+  margin-top: 12px;
+  margin-bottom: 12px;
   background-position: 10px -53px !important
 }
 .login_content form div a {

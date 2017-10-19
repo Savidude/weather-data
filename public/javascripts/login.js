@@ -15,8 +15,14 @@ function login() {
         },
         error: function (error) {
             if (error.status === 401) {
-                console.log("Invalid Username or Password")
+                console.log("Invalid Username or Password");
             }
         }
     });
+}
+
+function handle(e) {
+    if (e.keyCode == 13) {
+        login();
+    }
 }
