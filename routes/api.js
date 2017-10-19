@@ -51,7 +51,7 @@ router.get('/data/add', function(req, res, next) {
             var weatherStation = db.collection('WeatherStation');
             //Validating key and ID with the sent weather data
             var query = {"id": wsid, "key": key};
-            weatherStation.findOne(query, query, function (err, result) {
+            weatherStation.findOne(query, function (err, result) {
                 if (err) {
                     logger.error("Error while validating weather data", err);
                     db.close;
@@ -63,6 +63,20 @@ router.get('/data/add', function(req, res, next) {
                         db.close;
                         res.status(401).send();
                     } else {
+                        if (result.status === "Inactive") {
+                            result.status = "Active";
+
+                            weatherStation.updateOne(query, result, function (err, res) {
+                                if (err) {
+                                    logger.error("Error while querying weather data", err);
+                                    res.status(500).send();
+                                    throw err;
+                                } else {
+                                    logger.info("Weather station status changed back to active: " + result.name);
+                                }
+                            });
+                        }
+
                         var temp = data.temp;
                         var humidity = data.humidity;
                         var rainfall = data.rainfall;

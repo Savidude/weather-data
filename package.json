@@ -15,6 +15,7 @@
     "json2csv": "^3.11.2",
     "mongodb": "^2.2.31",
     "morgan": "~1.7.0",
+    "node-schedule": "^1.2.5",
     "rand-token": "^0.3.0",
     "serve-favicon": "~2.3.2",
     "winston": "^2.3.1"
