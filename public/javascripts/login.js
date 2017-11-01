@@ -10,12 +10,11 @@ function login() {
         url: "/data/login",
         data: JSON.stringify(userData),
         success: function (result) {
-            console.log(JSON.stringify(result, null, 2));
             window.location = '/';
         },
         error: function (error) {
             if (error.status === 401) {
-                console.log("Invalid Username or Password");
+                //TODO: Display error
             }
         }
     });

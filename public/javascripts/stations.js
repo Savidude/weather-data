@@ -250,6 +250,14 @@ app2.controller('stations', function ($scope, $http) {
                                     '<input type="text" class="form-control" id="edit-name" value=' + station.name +'>' +
                                 '</div>' +
                                 '<div class="form-group">' +
+                                    '<label for="name">ID:</label>' +
+                                    '<input type="text" class="form-control" id="edit-id" value=' + station.id +'>' +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                    '<label for="name">Key:</label>' +
+                                    '<input type="text" class="form-control" id="edit-key" value=' + station.key +'>' +
+                                '</div>' +
+                                '<div class="form-group">' +
                                     '<label for="name">Latitude:</label>' +
                                     '<input type="text" class="form-control" id="edit-lat" value=' + station.lat +'>' +
                                 '</div>' +
@@ -327,14 +335,15 @@ app2.controller('stations', function ($scope, $http) {
     }
 
     $scope.go = function ( path ) {
-        console.log(path)
-        window.location = path
+        window.location = path;
     };
 });
 
 function editStationData(id) {
     var station = {};
-    station.id = id;
+    station.oldId = id;
+    station.id = document.getElementById('edit-id').value;
+    station.key = document.getElementById('edit-key').value;
     station.name = document.getElementById('edit-name').value;
     station.lat = document.getElementById('edit-lat').value;
     station.lon = document.getElementById('edit-lon').value;
@@ -346,10 +355,25 @@ function editStationData(id) {
         type: "POST",
         contentType: 'application/json',
         dataType: "json",
-        url: "/data/update/station",
+        url: "/data/validate/station",
         data: JSON.stringify(station),
         success: function (result) {
-            location.reload()
+            $.ajax({
+                type: "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                url: "/data/update/station",
+                data: JSON.stringify(station),
+                success: function (result) {
+                    location.reload();
+                }
+            });
+        },
+        error: function (result) {
+            if (result.status === 409) {
+                var message = result.responseJSON.message;
+                alert(message);
+            }
         }
     });
 }
