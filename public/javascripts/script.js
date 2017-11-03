@@ -484,8 +484,20 @@ function init_daterangepicker() {
             plotSettings.xaxis.timeformat = "%I:%M %p";
             plotSettings.series.points.show = true;
         } else {
-            startTimestamp = picker.startDate + 30600000;
-            endTimestamp = picker.endDate;
+            startDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+            var endDate = new Date(picker.endDate);
+            endDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+
+            if (startDate.toDateString() === endDate.toDateString()) {
+                endDate.setDate(startDate.getDate() + 1);
+            }
+            startDate.setHours(8);
+            startDate.setMinutes(30);
+            endDate.setHours(8);
+            endDate.setMinutes(30);
+
+            startTimestamp = startDate.getTime();
+            endTimestamp = endDate.getTime();
 
             plotSettings.xaxis.timeformat = "%d/%m/%y";
             plotSettings.series.points.show = false;
