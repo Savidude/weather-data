@@ -211,11 +211,12 @@
                                                             <div class="station-data">
                                                                 <button type="button" class="btn btn-default"
                                                                         data-toggle="tooltip" data-placement="bottom" title="Info"
-                                                                        ng-click="go('/station/' + s.id)">
+                                                                        ng-click="go('/station/info/' + s.id)">
                                                                     <i class="fa fa-info-circle" aria-hidden="true"></i>
                                                                 </button>
                                                                 <button type="button" class="btn btn-default"
-                                                                        data-toggle="tooltip" data-placement="bottom" title="Health">
+                                                                        data-toggle="tooltip" data-placement="bottom" title="Health"
+                                                                        ng-click="go('/station/health/' + s.id)">
                                                                     <i class="fa fa-heart" aria-hidden="true"></i>
                                                                 </button>
                                                             </div>

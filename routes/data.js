@@ -38,6 +38,9 @@ var logger = new (winston.Logger)({
     ]
 });
 
+/*
+Getting the most recent weather data from all stations
+ */
 router.get('/stations', function(req, res) {
     //Create MongoDB client and connect to it
     var mongoClient = mongodb.MongoClient;
@@ -137,9 +140,12 @@ router.get('/stations', function(req, res) {
                 callback(null, result);
             }
         });
-    }
+    };
 });
 
+/*
+Getting the name of a single station
+ */
 router.get('/station/:id', function (req, res) {
     var wsid = req.params.id;
 
@@ -169,6 +175,9 @@ router.get('/station/:id', function (req, res) {
     });
 });
 
+/*
+Getting weather data of a single station
+ */
 router.get('/stations/:id', function (req, res) {
     //Getting start time and end time
     var data = req.query;
@@ -204,6 +213,47 @@ router.get('/stations/:id', function (req, res) {
     });
 });
 
+/*
+Getting health data of a single station
+ */
+router.get('/stations/health/:id', function (req, res) {
+    //Getting start time and end time
+    var data = req.query;
+    var startTime = Number(data.start);
+    var endTime = Number(data.end);
+
+    var wsid = req.params.id;
+
+    //Create MongoDB client and connect to it
+    var mongoClient = mongodb.MongoClient;
+    var contents = fs.readFileSync("routes/config.json");
+    var jsonContent = JSON.parse(contents);
+    var mongoDBUrl= jsonContent.mongoDBUrl;
+
+    mongoClient.connect(mongoDBUrl, function (err, db) {
+        if (err) {
+            logger.error("Unable to connect to the Database", err);
+            res.status(500).send();
+        } else {
+            var weatherData = db.collection('WeatherData');
+            var query = [{"wsid": wsid, "recDateTime": {$gt : startTime, $lt : endTime}}, {"_id": 0, "battery": 1, "signal": 1}];
+            weatherData.find(query[0], query[1]).toArray(function (err, result) {
+                if (err) {
+                    logger.error("Unable to connect to query from database", err);
+                    res.status(500).send();
+                } else {
+                    db.close();
+                    res.status(200).json(result);
+                }
+            });
+        }
+    });
+});
+
+
+/*
+Getting data of all stations in alphabetical order
+ */
 router.get('/all/stations', function (req, res) {
     //Create MongoDB client and connect to it
     var mongoClient = mongodb.MongoClient;
@@ -231,6 +281,9 @@ router.get('/all/stations', function (req, res) {
     });
 });
 
+/*
+Creating new station
+ */
 router.get('/create/stations', function (req, res) {
     var key = req.session.key;
     if (key === undefined) {
@@ -294,6 +347,9 @@ router.get('/create/stations', function (req, res) {
     }
 });
 
+/*
+Updating existing station
+ */
 router.post('/update/station', function (req, res) {
     var key = req.session.key;
     if (key === undefined) {
@@ -356,6 +412,9 @@ router.post('/update/station', function (req, res) {
     }
 });
 
+/*
+Deleting existing station
+ */
 router.get('/delete/station/id/:id/key/:key', function (req, res) {
     var key = req.session.key;
     if (key === undefined) {
@@ -398,6 +457,9 @@ router.get('/delete/station/id/:id/key/:key', function (req, res) {
     }
 });
 
+/*
+Validating a station by its ID and Key
+ */
 router.post('/validate/station', function (req, res) {
     var key = req.session.key;
     if (key === undefined) {
@@ -473,6 +535,9 @@ router.post('/validate/station', function (req, res) {
     }
 });
 
+/*
+Writing weather data to a .csv file
+ */
 router.post('/download', function (req, res) {
     var data = req.body;
 
@@ -492,6 +557,9 @@ router.post('/download', function (req, res) {
     });
 });
 
+/*
+Downloading .csv file with weather data
+ */
 router.get('/download', function (req, res ) {
     var data = req.query;
     var filename = data.filename + "WeatherData.csv";
@@ -505,6 +573,9 @@ router.get('/download', function (req, res ) {
     });
 });
 
+/*
+Validating username and password and providing session key
+ */
 router.post('/login', function (req, res) {
     var userData = req.body;
 
@@ -547,6 +618,9 @@ router.post('/login', function (req, res) {
     });
 });
 
+/*
+Logging out user by removing session key
+ */
 router.get('/logout', function (req, res) {
     req.session.key = undefined;
     res.status(200).send();

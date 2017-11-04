@@ -71,7 +71,7 @@ router.get('/stations', function(req, res, next) {
     }
 });
 
-router.get('/station/:id', function(req, res, next) {
+router.get('/station/info/:id', function(req, res, next) {
     var key = req.session.key;
     if (key === undefined) {
         res.status(401).send();
@@ -81,6 +81,24 @@ router.get('/station/:id', function(req, res, next) {
             if (user_type === 'admin' || user_type === 'superadmin') {
                 var wsid = req.params.id;
                 res.render('station-info', { title: 'Sanasa Insurance Weather Network', username: result.username, name: result.name,
+                    type: result.user_type, wsid: wsid });
+            } else {
+                res.status(401).send();
+            }
+        });
+    }
+});
+
+router.get('/station/health/:id', function(req, res, next) {
+    var key = req.session.key;
+    if (key === undefined) {
+        res.status(401).send();
+    } else {
+        validateKey(key, function (result) {
+            var user_type = result.user_type;
+            if (user_type === 'admin' || user_type === 'superadmin') {
+                var wsid = req.params.id;
+                res.render('station-health', { title: 'Sanasa Insurance Weather Network', username: result.username, name: result.name,
                     type: result.user_type, wsid: wsid });
             } else {
                 res.status(401).send();

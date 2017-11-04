@@ -83,6 +83,9 @@ router.get('/data/add', function(req, res, next) {
                         var windspd = data.windspd;
                         var winddir = data.winddir;
 
+                        var battery = data.battery;
+                        var signal = data.signal;
+
                         var weatherData = db.collection('WeatherData');
                         var currentData = {};
                         currentData.wsid = wsid;
@@ -93,6 +96,9 @@ router.get('/data/add', function(req, res, next) {
                         currentData.rainfall = Number(rainfall);
                         currentData.windspd = Number(windspd);
                         currentData.winddir = Number(winddir);
+
+                        currentData.battery = Number(battery);
+                        currentData.signal = Number(signal);
                         currentData.recTime = Math.floor(Date.now());
 
                         //Inserting the obtained weather data to database
