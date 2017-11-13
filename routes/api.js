@@ -121,6 +121,109 @@ router.get('/data/add', function(req, res, next) {
     });
 });
 
+router.get('/data/add/v2', function(req, res, next) {
+    //Getting weather station ID and key
+    var data = req.query;
+    var wsid = data.ID;
+    var key = data.KEY;
+
+    //Create MongoDB client and connect to it
+    var mongoClient = mongodb.MongoClient;
+    var contents = fs.readFileSync("routes/config.json");
+    var jsonContent = JSON.parse(contents);
+    var mongoDBUrl= jsonContent.mongoDBUrl;
+
+    mongoClient.connect(mongoDBUrl, function (err, db) {
+        if (err) {
+            logger.error("Unable to connect to the Database", err);
+            db.close;
+            res.status(500).send();
+        } else {
+            var weatherStation = db.collection('WeatherStation');
+            //Validating key and ID with the sent weather data
+            var query = {"id": wsid, "key": key};
+            weatherStation.findOne(query, function (err, result) {
+                if (err) {
+                    logger.error("Error while validating weather data", err);
+                    db.close;
+                    res.status(500).send();
+                    throw err;
+                } else {
+                    if (result === null) {
+                        logger.warn("Unauthorized access", data);
+                        db.close;
+                        res.status(401).send();
+                    } else {
+                        if (result.status === "Inactive") {
+                            result.status = "Active";
+
+                            weatherStation.updateOne(query, result, function (err, res) {
+                                if (err) {
+                                    logger.error("Error while querying weather data", err);
+                                    res.status(500).send();
+                                    throw err;
+                                } else {
+                                    logger.info("Weather station status changed back to active: " + result.name);
+                                }
+                            });
+                        }
+
+                        var temp = data.TP;
+                        var humidityTemperature = data.TH;
+                        var humidity = data.H;
+                        var rainfall = data.R;
+                        var windspd = data.S;
+                        var winddir = data.D;
+                        var pressure = data.P;
+
+                        var battery = data.B;
+                        var solarVoltage = data.SV;
+                        var externalVoltage = data.EV;
+                        var accelerometerZ = data.Z;
+                        var signal = data.SI;
+                        var errorFlag = data.F;
+
+                        var weatherData = db.collection('WeatherData');
+                        var currentData = {};
+                        currentData.wsid = wsid;
+
+                        currentData.recDateTime = Number(data.TIME);
+                        currentData.temp = Number(temp);
+                        currentData.humidityTemperature = Number(humidityTemperature);
+                        currentData.humidity = Number(humidity);
+                        currentData.rainfall = Number(rainfall);
+                        currentData.windspd = Number(windspd);
+                        currentData.winddir = Number(winddir);
+                        currentData.pressure = Number(pressure);
+
+                        currentData.battery = Number(battery);
+                        currentData.solarVoltage = Number(solarVoltage);
+                        currentData.externalVoltage = Number(externalVoltage);
+                        currentData.accelerometerZ = Number(accelerometerZ);
+                        currentData.signal = Number(signal);
+                        currentData.errorFlag = Number(errorFlag);
+                        currentData.recTime = Math.floor(Date.now());
+
+                        //Inserting the obtained weather data to database
+                        weatherData.insertOne(currentData, function (err, result) {
+                            if (err) {
+                                logger.error("Error while inserting weather data", err);
+                                res.status(500).send();
+                                db.close;
+                                throw err;
+                            } else {
+                                logger.info("Added weather data to database", currentData);
+                                db.close;
+                                res.status(201).send("success");
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    });
+});
+
 router.get('/station/:id', function (req, res) {
     var wsid = req.params.id;
 
