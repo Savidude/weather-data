@@ -187,9 +187,9 @@ router.get('/data/add/v2', function(req, res, next) {
                         var currentData = {};
                         currentData.wsid = wsid;
 
-                        currentData.recDateTime = Number(data.TIME);
-                        currentData.temp = Number(temp);
-                        currentData.humidityTemperature = Number(humidityTemperature);
+                        currentData.recDateTime = Number(data.TIME * 1000);
+                        currentData.temp = Math.round(Number(temp));
+                        currentData.humidityTemperature = Math.round(Number(humidityTemperature));
                         currentData.humidity = Number(humidity);
                         currentData.rainfall = Number(rainfall);
                         currentData.windspd = Number(windspd);
