@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongodb = require('mongodb');
 var fs = require('fs');
+var path = require('path');
 
 //Instantiating logger
 var winston = require('winston');
@@ -271,6 +272,19 @@ router.get('/station/:id', function (req, res) {
                     res.status(200).json(result);
                 }
             });
+        }
+    });
+});
+
+
+//Get logs
+router.get('/logs/api', function (req, res) {
+    var filepath = __dirname + '/../log/api.log';
+    fs.readFile(filepath, 'utf8', function (err, data) {
+        if (err){
+            console.log(err);
+        } else {
+            res.send(data);
         }
     });
 });

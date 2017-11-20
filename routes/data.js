@@ -566,7 +566,7 @@ router.get('/download', function (req, res ) {
     var filepath = __dirname + '/../data/weatherData.csv';
     res.download(filepath, filename, function (err) {
         if( err ) {
-            logger.error("Error while downloading CSV file", err)
+            logger.error("Error while downloading CSV file", err);
         } else {
             logger.info(".csv file downloaded");
         }
