@@ -567,7 +567,7 @@ function getUserDisplays(user_type) {
         document.getElementById('log').innerHTML = 'Log Out';
         document.getElementById('log-action').href = '';
         document.getElementById('log-action').onclick = function () {
-            $.get('/data/logout', function(data, status) {
+            $.post('/data/logout', function(data, status) {
             });
         };
     } else if (user_type === 'superadmin') {
@@ -575,7 +575,7 @@ function getUserDisplays(user_type) {
         document.getElementById('log').innerHTML = 'Log Out';
         document.getElementById('log-action').href = '';
         document.getElementById('log-action').onclick = function () {
-            $.get('/data/logout', function(data, status) {
+            $.post('/data/logout', function(data, status) {
             });
         };
     }

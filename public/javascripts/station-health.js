@@ -275,6 +275,8 @@ var weatherDataArray;
 var stationName;
 $(document).ready(function() {
     wsid = document.getElementById('station-id').value;
+    var user_type = document.getElementById('user_type').value;
+    getUserDisplays(user_type);
 
     init_sidebar();
     init_daterangepicker();
@@ -292,6 +294,26 @@ $(document).ready(function() {
         }
     });
 });
+
+function getUserDisplays(user_type) {
+    if (user_type === 'guest') {
+        document.getElementById('log-action').href = '/login';
+    } else if (user_type === 'admin') {
+        document.getElementById('log').innerHTML = 'Log Out';
+        document.getElementById('log-action').href = '';
+        document.getElementById('log-action').onclick = function () {
+            $.post('/data/logout', function(data, status) {
+            });
+        };
+    } else if (user_type === 'superadmin') {
+        document.getElementById('log').innerHTML = 'Log Out';
+        document.getElementById('log-action').href = '';
+        document.getElementById('log-action').onclick = function () {
+            $.post('/data/logout', function(data, status) {
+            });
+        };
+    }
+}
 
 var app3 = angular.module('app3', []);
 

@@ -21,13 +21,18 @@
 </head>
 
 <body class="nav-md">
+<input type="hidden" id="user_type" value="{{type}}">
 <input type="hidden" id="station-id" value="{{wsid}}">
 <div class="container body">
     <div class="main_container">
         <div class="col-md-3 left_col">
             <div class="left_col scroll-view">
                 <div class="navbar nav_title" style="border: 0;">
-                    <a href="/" class="site_title"><i class="fa fa-cloud"></i> <span>Weather Data</span></a>
+                    <a href="/" class="site_title">
+                        <img src="../../images/logo.jpg" class="img-logo"> <br>
+                        <span>Sanasa Insurance</span> <br>
+                        <small>Weather Network</small>
+                    </a>
                 </div>
 
                 <div class="clearfix"></div>
@@ -101,7 +106,12 @@
                                 <span class=" fa fa-angle-down"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                <li><a href="/login"><i class="fa fa-sign-out pull-right"></i> Log In</a></li>
+                                <li>
+                                    <a id="log-action" href="/login">
+                                        <i class="fa fa-sign-out pull-right"></i>
+                                        <span id="log">Log In</span>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     </ul>

@@ -236,7 +236,7 @@ router.get('/stations/health/:id', function (req, res) {
             res.status(500).send();
         } else {
             var weatherData = db.collection('WeatherData');
-            var query = [{"wsid": wsid, "recDateTime": {$gt : startTime, $lt : endTime}}, {"_id": 0, "battery": 1, "signal": 1}];
+            var query = [{"wsid": wsid, "recDateTime": {$gt : startTime, $lt : endTime}}, {"_id": 0, "recDateTime" : 1, "battery": 1, "signal": 1}];
             weatherData.find(query[0], query[1]).toArray(function (err, result) {
                 if (err) {
                     logger.error("Unable to connect to query from database", err);
@@ -621,7 +621,7 @@ router.post('/login', function (req, res) {
 /*
 Logging out user by removing session key
  */
-router.get('/logout', function (req, res) {
+router.post('/logout', function (req, res) {
     req.session.key = undefined;
     res.status(200).send();
 });

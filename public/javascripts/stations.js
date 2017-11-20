@@ -155,6 +155,15 @@ function getUserDisplays(user_type) {
         var addStationModal = document.getElementById('addStationModal');
         addStationModal.parentNode.removeChild(addStationModal);
     }
+
+    if (user_type === 'admin' || user_type === 'superadmin') {
+        document.getElementById('log').innerHTML = 'Log Out';
+        document.getElementById('log-action').href = '';
+        document.getElementById('log-action').onclick = function () {
+            $.post('/data/logout', function(data, status) {
+            });
+        };
+    }
 }
 
 var app2 = angular.module('app2', [])
