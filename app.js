@@ -117,7 +117,7 @@ function checkStationActivity() {
                     result.forEach(function (station) {
                         var wsid = station._id;
                         var lastRecordedTimeDifference = Date.now() - station.last;
-                        if (lastRecordedTimeDifference > 1800000) {
+                        if (lastRecordedTimeDifference > 3600000) {
                             var weatherStationQuery = {"id": wsid};
                             weatherStation.findOne(weatherStationQuery, function (err, weatherStationResult) {
                                 if (err) {
@@ -125,20 +125,22 @@ function checkStationActivity() {
                                     res.status(500).send();
                                     throw err;
                                 } else {
-                                    if (weatherStationResult.status === "Active") {
-                                        //Change station status to inactive is unresponsive for more than 30 minutes
-                                        weatherStationResult.status = "Inactive";
-                                        weatherStation.updateOne(weatherStationQuery, weatherStationResult, function (err, res) {
-                                            if (err) {
-                                                wlogger.error("Error while querying weather data", err);
-                                                res.status(500).send();
-                                                throw err;
-                                            } else {
-                                                wlogger.info("Inactive Weather Station Detected: " + weatherStationResult.name);
-                                                //TODO: Send Email and SMS
-                                                db.close();
-                                            }
-                                        });
+                                    if (weatherStationResult !== null) {
+                                        if (weatherStationResult.status === "Active") {
+                                            //Change station status to inactive is unresponsive for more than 30 minutes
+                                            weatherStationResult.status = "Inactive";
+                                            weatherStation.updateOne(weatherStationQuery, weatherStationResult, function (err, res) {
+                                                if (err) {
+                                                    wlogger.error("Error while querying weather data", err);
+                                                    res.status(500).send();
+                                                    throw err;
+                                                } else {
+                                                    wlogger.info("Inactive Weather Station Detected: " + weatherStationResult.name);
+                                                    //TODO: Send Email and SMS
+                                                    db.close();
+                                                }
+                                            });
+                                        }
                                     }
                                 }
                             });

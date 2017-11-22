@@ -86,43 +86,52 @@ router.get('/stations', function(req, res) {
                                 res.status(500).send();
                                 throw err;
                             } else {
-                                try {
-                                    //Storing weather station data in object
-                                    stationData.name = weatherStationResult.name;
-                                    stationData.lat = weatherStationResult.lat;
-                                    stationData.lon = weatherStationResult.lon;
+                                if (weatherStationResult !== null) {
+                                    try {
+                                        //Storing weather station data in object
+                                        stationData.name = weatherStationResult.name;
+                                        stationData.lat = weatherStationResult.lat;
+                                        stationData.lon = weatherStationResult.lon;
 
-                                    //Getting weather data
-                                    var weatherDataQuery = [{"recTime": station.last}, {"_id": 0, "temp": 1, "humidity": 1,
-                                        "rainfall": 1, "windspd": 1, "winddir": 1, "recDateTime": 1}];
-                                    findStationData(weatherData, weatherDataQuery, function (err, weatherDataResult) {
-                                        if (err) {
-                                            logger.error("Error while querying weather data", err);
-                                            res.status(500).send();
-                                            throw err;
-                                        } else {
-                                            if (weatherDataResult !== null) {
-                                                // Storing weather data in object
-                                                stationData.temp = weatherDataResult.temp;
-                                                stationData.humidity = weatherDataResult.humidity;
-                                                stationData.rainfall = weatherDataResult.rainfall;
-                                                stationData.windspd = weatherDataResult.windspd;
-                                                stationData.winddir = weatherDataResult.winddir;
-                                                stationData.recDateTime = weatherDataResult.recDateTime;
+                                        //Getting weather data
+                                        var weatherDataQuery = [{"recTime": station.last}, {"_id": 0, "temp": 1, "humidity": 1,
+                                            "rainfall": 1, "windspd": 1, "winddir": 1, "recDateTime": 1}];
+                                        findStationData(weatherData, weatherDataQuery, function (err, weatherDataResult) {
+                                            if (err) {
+                                                logger.error("Error while querying weather data", err);
+                                                res.status(500).send();
+                                                throw err;
+                                            } else {
+                                                if (weatherDataResult !== null) {
+                                                    // Storing weather data in object
+                                                    stationData.temp = weatherDataResult.temp;
+                                                    stationData.humidity = weatherDataResult.humidity;
+                                                    stationData.rainfall = weatherDataResult.rainfall;
+                                                    stationData.windspd = weatherDataResult.windspd;
+                                                    stationData.winddir = weatherDataResult.winddir;
+                                                    stationData.recDateTime = weatherDataResult.recDateTime;
 
-                                                stationDataArray.push(stationData);
+                                                    stationDataArray.push(stationData);
+                                                }
+
+                                                if (stationCount === result.length - 1) {
+                                                    logger.info("Weather station data requested");
+                                                    db.close();
+                                                    res.status(200).json(stationDataArray);
+                                                }
+                                                stationCount++;
                                             }
-
-                                            if (stationCount === result.length - 1) {
-                                                logger.info("Weather station data requested");
-                                                db.close();
-                                                res.status(200).json(stationDataArray);
-                                            }
-                                            stationCount++;
-                                        }
-                                    });
-                                } catch (err) {
-                                    logger.warn(err);
+                                        });
+                                    } catch (err) {
+                                        logger.warn(err);
+                                    }
+                                } else {
+                                    if (stationCount === result.length - 1) {
+                                        logger.info("Weather station data requested");
+                                        db.close();
+                                        res.status(200).json(stationDataArray);
+                                    }
+                                    stationCount++;
                                 }
                             }
                         });

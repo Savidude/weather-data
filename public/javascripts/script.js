@@ -622,15 +622,22 @@ app1.controller('stations', function ($scope, $http) {
                 weatherStationDataLatest.forEach (function (station) {
                     var lastRecordedTimeDifference = Date.now() - station.recDateTime;
                     var stationData;
-                    if (lastRecordedTimeDifference < 1800000) {
-                        stationData = [station.lat, station.lon, getWeatherDataInfoWindow(station).outerHTML,
-                            station.temp.toString()];
+                    if (lastRecordedTimeDifference < 3600000) {
+                        if (station.temp !== null) {
+                            stationData = [station.lat, station.lon, getWeatherDataInfoWindow(station).outerHTML,
+                                station.temp.toString()];
+                        }
                     } else {
                         stationData = [station.lat, station.lon, getWeatherDataInfoWindow(station).outerHTML,
                             'warn'];
                     }
-                    stationDataArray.push(stationData);
+                    if (stationData !== undefined) {
+                        console.log(JSON.stringify(stationData, null, 2));
+                        stationDataArray.push(stationData);
+                    }
                 });
+
+                // console.log(JSON.stringify(stationDataArray, null, 2));
 
                 var data = google.visualization.arrayToDataTable(stationDataArray);
                 var map = new google.visualization.Map(document.getElementById('map_div'));
