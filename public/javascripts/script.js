@@ -699,7 +699,7 @@ app1.controller('stations', function ($scope, $http) {
         windspd.innerHTML = 'Wind Speed: ' + station.windspd + 'km/h';
         row2.appendChild(windspd);
         var winddir = document.createElement('td');
-        winddir.innerHTML = 'Wind Direction: ' + station.winddir;
+        winddir.innerHTML = 'Wind Direction: ' + getWindDir(Number(station.winddir));
         row2.appendChild(winddir);
         weatherData.appendChild(row2);
         stationInfoWindow.appendChild(weatherData);
@@ -716,6 +716,43 @@ app1.controller('stations', function ($scope, $http) {
         stationInfoWindow.appendChild(lastUpdate);
 
         return stationInfoWindow;
+    }
+
+    function getWindDir(windDir) {
+        switch (windDir) {
+            case 0:
+                return 'N';
+            case 23:
+                return 'NNE';
+            case 45:
+                return 'NE';
+            case 68:
+                return 'ENE';
+            case 90:
+                return 'E';
+            case 113:
+                return 'ESE';
+            case 135:
+                return 'SE';
+            case 158:
+                return 'SSE';
+            case 180:
+                return 'S';
+            case 203:
+                return 'SSW';
+            case 225:
+                return 'SW';
+            case 248:
+                return 'WSW';
+            case 270:
+                return 'W';
+            case 293:
+                return 'WNW';
+            case 315:
+                return 'NW';
+            case 338:
+                return 'NNW';
+        }
     }
 
     $scope.stationDataRequest = function (id, name) {
