@@ -18,6 +18,14 @@
         <link href="/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
          <!--Custom Theme Style-->
         <link href="/stylesheets/style.css" rel="stylesheet">
+
+        <style>
+            #map_div {
+                height: 400px;
+                width: 100%;
+            }
+        </style>
+
     </head>
 
     <body class="nav-md">
@@ -238,7 +246,10 @@
         <!--Angular JS-->
         <script src="/vendors/angular-1.6.5/angular.min.js"></script>
         <!--Getting Google Maps API source-->
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <!--<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdqOanxFRfM4f7bLWEKMMH33YBUgWtvV0">
+        </script>
         <!-- Custom Scripts -->
         <script src="/javascripts/script.js"></script>
     </body>

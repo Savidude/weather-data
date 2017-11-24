@@ -548,6 +548,7 @@ function initTimeRange(today) {
 $(document).ready(function() {
     var user_type = document.getElementById('user_type').value;
     getUserDisplays(user_type);
+    initMapMarkerIcons();
 
     init_flot_chart();
     init_sidebar();
@@ -581,6 +582,14 @@ function getUserDisplays(user_type) {
     }
 }
 
+var icons = {};
+function initMapMarkerIcons() {
+    for (var i = 10; i < 40; i++) {
+        icons[i] = '/images/markers/' + i + '.png';
+    }
+    icons['warn'] = '/images/markers/warn.png';
+}
+
 var app1 = angular.module('app1', []);
 var weatherStationDataLatest;
 var weatherStationDataLatestTemp;
@@ -612,53 +621,49 @@ app1.controller('stations', function ($scope, $http) {
             weatherStationDataLatestTemp = response.data;
             $scope.stations = weatherStationDataLatestTemp;
 
-            google.charts.load("current", {
-                "packages":["map"],
-                "mapsApiKey": "AIzaSyDof3ukKWJJlFrHqh5sJlPHPusUQ4lOwaU"
+            var map = new google.maps.Map(document.getElementById('map_div'), {
+                zoom: 7,
+                center: {lat:7.850, lng:80.671}
             });
-            google.charts.setOnLoadCallback(drawChart);
-            function drawChart() {
-                var stationDataArray = [['Lat', 'Lon', 'Name', 'Marker']];
-                weatherStationDataLatest.forEach (function (station) {
-                    var lastRecordedTimeDifference = Date.now() - station.recDateTime;
-                    var stationData;
-                    if (lastRecordedTimeDifference < 3600000) {
-                        if (station.temp !== null) {
-                            stationData = [station.lat, station.lon, getWeatherDataInfoWindow(station).outerHTML,
-                                station.temp.toString()];
-                        }
-                    } else {
-                        stationData = [station.lat, station.lon, getWeatherDataInfoWindow(station).outerHTML,
-                            'warn'];
-                    }
-                    if (stationData !== undefined) {
-                        console.log(JSON.stringify(stationData, null, 2));
-                        stationDataArray.push(stationData);
-                    }
-                });
 
-                // console.log(JSON.stringify(stationDataArray, null, 2));
+            weatherStationDataLatest.forEach(function (station) {
+                var lastRecordedTimeDifference = Date.now() - station.recDateTime;
+                if (lastRecordedTimeDifference < 3600000) {
+                    if (station.temp !== null) {
+                        var infoWindow = new google.maps.InfoWindow({
+                            content: getWeatherDataInfoWindow(station)
+                        });
 
-                var data = google.visualization.arrayToDataTable(stationDataArray);
-                var map = new google.visualization.Map(document.getElementById('map_div'));
-                var icons = {};
-                for (var i = 10; i < 40; i++) {
-                    icons[i] = {};
-                    icons[i].normal = '/images/markers/' + i + '.png';
-                    icons[i].selected = '/images/markers/' + i + '.png';
+                        var marker = new google.maps.Marker({
+                            position: {lat: Number(station.lat), lng: Number(station.lon)},
+                            map: map,
+                            icon: icons[Number(station.temp)]
+                        });
+
+                        marker.addListener('click', function() {
+                            infoWindow.open(map, marker);
+                        });
+
+                    }
+                } else {
+                    if (station.temp !== null) {
+                        var infoWindowWarn = new google.maps.InfoWindow({
+                            content: getWeatherDataInfoWindow(station)
+                        });
+
+                        var markerWarn = new google.maps.Marker({
+                            position: {lat: Number(station.lat), lng: Number(station.lon)},
+                            map: map,
+                            icon: icons.warn
+                        });
+
+                        markerWarn.addListener('click', function() {
+                            infoWindowWarn.open(map, markerWarn);
+                        });
+
+                    }
                 }
-                icons['warn'] = {};
-                icons['warn'].normal = '/images/markers/warn.png';
-                icons['warn'].selected = '/images/markers/warn.png';
-
-                var options = {};
-                options.showTooltip = false;
-                options.showInfoWindow = true;
-                options.useMapTypeControl = true;
-                options.icons = icons;
-
-                map.draw(data, options);
-            }
+            });
         }
     });
 
