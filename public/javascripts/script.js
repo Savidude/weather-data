@@ -720,6 +720,7 @@ app1.controller('stations', function ($scope, $http) {
         lastUpdate.innerHTML = 'Last Updated on: ' + dateTime;
         stationInfoWindow.appendChild(lastUpdate);
 
+        console.log(station.name + " " + station.winddir)
         return stationInfoWindow;
     }
 
@@ -735,7 +736,7 @@ app1.controller('stations', function ($scope, $http) {
                 return 'ENE';
             case 90:
                 return 'E';
-            case 113:
+            case 112.5:
                 return 'ESE';
             case 135:
                 return 'SE';
