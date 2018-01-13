@@ -319,6 +319,7 @@ var tempPlotData = [];
 var humidityPlotData = [];
 var windspdPlotData = [];
 var winddirPlotData = [];
+var pressurePlotData = [];
 var plotSettings;
 var wsid;
 
@@ -421,7 +422,7 @@ function init_daterangepicker() {
         startDate: moment(),
         endDate: moment().add(1, 'days'),
         minDate: '01/01/2012',
-        maxDate: '12/31/2017',
+        maxDate: '12/31/2020',
         dateLimit: {
             days: 60
         },
@@ -781,6 +782,7 @@ function plotWeatherData(weatherData) {
     humidityPlotData = [];
     windspdPlotData = [];
     winddirPlotData = [];
+    pressurePlotData = [];
 
     var offsetTime = new Date().getTimezoneOffset();
     var offsetTimeMills = ((offsetTime) * 60) * 1000 * (-1);
@@ -793,6 +795,7 @@ function plotWeatherData(weatherData) {
         humidityPlotData.push([recDateTime, data.humidity]);
         windspdPlotData.push([recDateTime, data.windspd]);
         winddirPlotData.push([recDateTime, data.winddir]);
+        pressurePlotData.push([recDateTime, data.pressure]);
     });
 
     // if (weatherData.length > 0) {
@@ -871,6 +874,21 @@ function plotWeatherData(weatherData) {
                     data: winddirPlotData,
                     lines: {
                         fillColor: "rgba(0, 150, 136, 0.12)"
+                    },
+                    points: {
+                        fillColor: "#fff" }
+                }], plotSettings);
+
+        }
+
+        if ($("#pressure_plot").length){
+            plotSettings.colors[0] = '#607D8B';
+            $.plot( $("#pressure_plot"),
+                [{
+                    label: "Pressure",
+                    data: pressurePlotData,
+                    lines: {
+                        fillColor: "rgba(96, 125, 139, 0.12)"
                     },
                     points: {
                         fillColor: "#fff" }
