@@ -158,7 +158,7 @@ function init_daterangepicker() {
         startDate: moment(),
         endDate: moment().add(1, 'days'),
         minDate: '01/01/2012',
-        maxDate: '12/31/2017',
+        maxDate: '12/31/2020',
         dateLimit: {
             days: 60
         },
