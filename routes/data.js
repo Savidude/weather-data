@@ -95,7 +95,7 @@ router.get('/stations', function(req, res) {
 
                                         //Getting weather data
                                         var weatherDataQuery = [{"recTime": station.last}, {"_id": 0, "temp": 1, "humidity": 1,
-                                            "rainfall": 1, "windspd": 1, "winddir": 1, "recDateTime": 1}];
+                                            "humidityTemperature": 1, "rainfall": 1, "windspd": 1, "winddir": 1, "recDateTime": 1}];
                                         findStationData(weatherData, weatherDataQuery, function (err, weatherDataResult) {
                                             if (err) {
                                                 logger.error("Error while querying weather data", err);
@@ -105,6 +105,7 @@ router.get('/stations', function(req, res) {
                                                 if (weatherDataResult !== null) {
                                                     // Storing weather data in object
                                                     stationData.temp = weatherDataResult.temp;
+                                                    stationData.humidityTemperature = weatherDataResult.humidityTemperature;
                                                     stationData.humidity = weatherDataResult.humidity;
                                                     stationData.rainfall = weatherDataResult.rainfall;
                                                     stationData.windspd = weatherDataResult.windspd;
@@ -208,7 +209,7 @@ router.get('/stations/:id', function (req, res) {
         } else {
             var weatherData = db.collection('WeatherData');
             var query = [{"wsid": wsid, "recDateTime": {$gt : startTime, $lt : endTime}}, {"_id": 0, "temp": 1,
-                "humidity": 1, "rainfall": 1, "windspd": 1, "winddir": 1, "pressure" : 1, "recDateTime": 1}];
+                "humidityTemperature": 1, "humidity": 1, "rainfall": 1, "windspd": 1, "winddir": 1, "pressure" : 1, "recDateTime": 1}];
             weatherData.find(query[0], query[1]).toArray(function (err, result) {
                 if (err) {
                     logger.error("Unable to connect to query from database", err);

@@ -630,6 +630,10 @@ app1.controller('stations', function ($scope, $http) {
             weatherStationDataLatest.forEach(function (station) {
                 var lastRecordedTimeDifference = Date.now() - station.recDateTime;
                 if (lastRecordedTimeDifference < 3600000) {
+                    var temperature = station.temp;
+                    if (temperature < 5 || temperature > 60) {
+                        temperature = station.humidityTemperature;
+                    }
                     if (station.temp !== null) {
                         var infoWindow = new google.maps.InfoWindow({
                             content: getWeatherDataInfoWindow(station)
@@ -638,7 +642,7 @@ app1.controller('stations', function ($scope, $http) {
                         var marker = new google.maps.Marker({
                             position: {lat: Number(station.lat), lng: Number(station.lon)},
                             map: map,
-                            icon: icons[Number(station.temp)]
+                            icon: icons[Number(temperature)]
                         });
 
                         marker.addListener('click', function() {
@@ -687,8 +691,13 @@ app1.controller('stations', function ($scope, $http) {
         coordinates.appendChild(coordinatesTable);
         stationInfoWindow.appendChild(coordinates);
 
+        var temperatureVal = station.temp;
+        if (temperatureVal < 5 || temperatureVal > 60) {
+            temperatureVal = station.humidityTemperature;
+        }
+        console.log(station.name + " : " + temperatureVal);
         var temperature = document.createElement('h1');
-        temperature.innerHTML = station.temp + ' <sup>o</sup>C';
+        temperature.innerHTML = temperatureVal + ' <sup>o</sup>C';
         stationInfoWindow.appendChild(temperature);
 
         var weatherData = document.createElement('table');
@@ -720,8 +729,6 @@ app1.controller('stations', function ($scope, $http) {
         + (lastUpdatedDate.getSeconds() < 10 ? '0' + lastUpdatedDate.getSeconds() : lastUpdatedDate.getSeconds());
         lastUpdate.innerHTML = 'Last Updated on: ' + dateTime;
         stationInfoWindow.appendChild(lastUpdate);
-
-        console.log(station.name + " " + station.winddir)
         return stationInfoWindow;
     }
 
@@ -791,11 +798,16 @@ function plotWeatherData(weatherData) {
         var recDateTime = data.recDateTime + offsetTimeMills;
 
         rainfallPlotData.push([recDateTime, data.rainfall]);
-        tempPlotData.push([recDateTime, data.temp]);
         humidityPlotData.push([recDateTime, data.humidity]);
         windspdPlotData.push([recDateTime, data.windspd]);
         winddirPlotData.push([recDateTime, data.winddir]);
         pressurePlotData.push([recDateTime, data.pressure]);
+
+        var temperature = data.temp;
+        if (temperature < 5 || temperature > 60) {
+            temperature = data.humidityTemperature;
+        }
+        tempPlotData.push([recDateTime, temperature]);
     });
 
     // if (weatherData.length > 0) {
