@@ -481,6 +481,7 @@ router.post('/validate/station', function (req, res) {
 
                 var id = data.id;
                 var key = data.key;
+                var oldId = data.oldId;
 
                 //Create MongoDB client and connect to it
                 var mongoClient = mongodb.MongoClient;
@@ -503,7 +504,7 @@ router.post('/validate/station', function (req, res) {
                                 res.status(500).send();
                                 throw err;
                             } else {
-                                if (result !== null) {
+                                if (result !== null && id !== oldId) {
                                     //If a matching ID is found
                                     var response = {};
                                     response.message = "Invalid ID. A weather station with the entered ID already exists.";
@@ -518,7 +519,8 @@ router.post('/validate/station', function (req, res) {
                                             res.status(500).send();
                                             throw err;
                                         } else {
-                                            if (result !== null) {
+                                            var id = result.id;
+                                            if (result !== null && id !== oldId) {
                                                 //If a matching key is found
                                                 var response = {};
                                                 response.message = "Invalid Key. A weather station with the entered key already exists.";
@@ -637,6 +639,9 @@ router.post('/logout', function (req, res) {
 
 module.exports = router;
 
+/*
+Validating user key from session
+ */
 function validateKey(key, callback) {
     //Create MongoDB client and connect to it
     var mongoClient = mongodb.MongoClient;
