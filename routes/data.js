@@ -520,18 +520,25 @@ router.post('/validate/station', function (req, res) {
                                             res.status(500).send();
                                             throw err;
                                         } else {
-                                            var id = result.id;
-                                            if (result !== null && id !== oldId) {
-                                                //If a matching key is found
-                                                var response = {};
-                                                response.message = "Invalid Key. A weather station with the entered key already exists.";
-                                                res.status(409).json(response);
+                                            if (result !== null) {
+                                                var id = result.id;
+                                                if (id !== oldId) {
+                                                    //If a matching key is found
+                                                    var response = {};
+                                                    response.message = "Invalid Key. A weather station with the entered key already exists.";
+                                                    res.status(409).json(response);
+                                                } else {
+                                                    //If a matching key is not found
+                                                    db.close();
+                                                    var response2= {};
+                                                    response2.status = 200;
+                                                    res.status(200).json(response2);
+                                                }
                                             } else {
-                                                //If a matching key is not found
-                                                db.close();
-                                                var response2= {};
-                                                response2.status = 200;
-                                                res.status(200).json(response2);
+                                                //If a result was not obtained
+                                                var response = {};
+                                                response.message = "A weather station with the provided key not found";
+                                                res.status(409).json(response);
                                             }
                                         }
                                     });
