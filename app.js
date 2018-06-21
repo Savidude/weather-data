@@ -113,7 +113,6 @@ function checkStationActivity() {
                     throw err;
                 } else {
                     var weatherStation = db.collection('WeatherStation');
-                    var stationCount = 0;
                     result.forEach(function (station) {
                         var wsid = station._id;
                         var lastRecordedTimeDifference = Date.now() - station.last;
@@ -136,7 +135,8 @@ function checkStationActivity() {
                                                     throw err;
                                                 } else {
                                                     wlogger.info("Inactive Weather Station Detected: " + weatherStationResult.name);
-                                                    //TODO: Send Email and SMS
+                                                    sendSMS(wsid);
+                                                    var phoneNo = station.notify_phone;
                                                     db.close();
                                                 }
                                             });
@@ -146,6 +146,58 @@ function checkStationActivity() {
                             });
                         }
                     });
+                }
+            });
+        }
+    });
+}
+
+function sendSMS(wsid) {
+    //Create MongoDB client and connect to it
+    var mongoClient = mongodb.MongoClient;
+    var contents = fs.readFileSync("routes/config.json");
+    var jsonContent = JSON.parse(contents);
+    var mongoDBUrl= jsonContent.mongoDBUrl;
+
+    mongoClient.connect(mongoDBUrl, function (err, db) {
+        if (err) {
+            logger.error("Unable to connect to the Database", err);
+            res.status(500).send();
+        } else {
+            var weatherStation = db.collection('WeatherStation');
+            var query = [{"id": wsid}, {"_id": 0, "name": 1, "notify_phone": 1}];
+            weatherStation.findOne(query[0], query[1], function (err, result) {
+                if (err) {
+                    logger.error("Unable find weather station", err);
+                } else {
+                    db.close();
+
+                    var notifyMessage = "Weather station at " + result.name + " is inactive.";
+                    var phone = result.notify_phone;
+
+                    if (phone !== null) {
+                        var request = require('request');
+                        var xmlRequest = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+                            '<sms>\n' +
+                            '\t<user_name>weather_station</user_name>\n' +
+                            '\t<password>West@123</password>\n' +
+                            '\t<msg_ref_num>A001</msg_ref_num>\n' +
+                            '\t<from>SANASA Insu</from>\n' +
+                            '\t<to>' + phone + '</to>\n' +
+                            '\t<msg>' + notifyMessage + '</msg>\n' +
+                            '</sms>';
+                        request.post(
+                            {url:'http://220.247.223.51:8081/sendsms/',
+                                body : xmlRequest,
+                                headers: {'Content-Type': 'text/xml'}
+                            },
+                            function (error, response, body) {
+                                if (!error && response.statusCode == 200) {
+                                    // console.log(body);
+                                }
+                            }
+                        );
+                    }
                 }
             });
         }
