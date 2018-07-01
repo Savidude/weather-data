@@ -180,7 +180,7 @@ router.get('/station/:id', function (req, res) {
                     db.close();
                     res.status(200).json(result);
                 }
-            })
+            });
         }
     });
 });
