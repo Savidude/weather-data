@@ -50,8 +50,8 @@ var j = schedule.scheduleJob('*/30 * * * *', function(){
 
 //Schedules to send weather data SMS every day at 8AM
 var rainfallSummary = new schedule.RecurrenceRule();
-rainfallSummary.hour = 8;
-rainfallSummary.minute = 45;
+rainfallSummary.hour = 3;
+rainfallSummary.minute = 15;
 rainfallSummary.tz = 'Asia/Colombo';
 var k = schedule.scheduleJob(rainfallSummary, function(){
     sendWeatherData();
