@@ -364,7 +364,6 @@ function sendWeatherData() {
             rainfall = stationData.rainfall;
         }
         var dateData = new Date(stationData.recTime);
-        dateData.setDate(dateData.getDate() - 1);
         var date = dateData.getDate() + "/" + (dateData.getMonth() + 1);
 
         var message = "Weather Station: " + stationData.name + "\n" +
