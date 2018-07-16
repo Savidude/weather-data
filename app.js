@@ -363,11 +363,19 @@ function sendWeatherData() {
         if ((stationData.rainfall !== undefined) || (stationData.status !== 'Active')) {
             rainfall = stationData.rainfall;
         }
-        var dateData = new Date(stationData.recTime);
-        var date = dateData.getDate() + "/" + (dateData.getMonth() + 1);
 
-        var message = "Weather Station: " + stationData.name + "\n" +
-                        "Total rainfall for the 24 hours ending 8.30 a.m. on " + date + ": " + rainfall + " mm";
+        var lastRecordedTimeDifference = Date.now() - stationData.recTime;
+        var message;
+        if (lastRecordedTimeDifference > 3600000) {
+            var date = Date.now().getDate() + "/" + (Date.now().getMonth() + 1);
+            message = "Weather Station: " + stationData.name + "\n" +
+                "Total rainfall for the 24 hours ending 8.30 a.m. on " + date + ": N/A";
+        } else {
+            var dateData = new Date(stationData.recTime);
+            var date = dateData.getDate() + "/" + (dateData.getMonth() + 1);
+            message = "Weather Station: " + stationData.name + "\n" +
+                "Total rainfall for the 24 hours ending 8.30 a.m. on " + date + ": " + rainfall + " mm";
+        }
 
         var xmlRequest = '<?xml version="1.0" encoding="UTF-8"?>\n' +
             '<sms_list>\n' +
