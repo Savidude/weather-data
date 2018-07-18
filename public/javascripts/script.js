@@ -639,15 +639,27 @@ app1.controller('stations', function ($scope, $http) {
                             content: getWeatherDataInfoWindow(station)
                         });
 
-                        var marker = new google.maps.Marker({
-                            position: {lat: Number(station.lat), lng: Number(station.lon)},
-                            map: map,
-                            icon: icons[Number(temperature)]
-                        });
+                        if ((station.name !== "Karadiyanaru") && (station.name !== "Koralaipattu")) {
+                            var marker = new google.maps.Marker({
+                                position: {lat: Number(station.lat), lng: Number(station.lon)},
+                                map: map,
+                                icon: icons[Number(temperature)]
+                            });
 
-                        marker.addListener('click', function() {
-                            infoWindow.open(map, marker);
-                        });
+                            marker.addListener('click', function() {
+                                infoWindow.open(map, marker);
+                            });
+                        } else {
+                            var marker = new google.maps.Marker({
+                                position: {lat: Number(station.lat), lng: Number(station.lon)},
+                                map: map,
+                                icon: '/images/markers/warn.png'
+                            });
+
+                            marker.addListener('click', function() {
+                                infoWindow.open(map, marker);
+                            });
+                        }
 
                     }
                 } else {
@@ -695,7 +707,6 @@ app1.controller('stations', function ($scope, $http) {
         if (temperatureVal < 5 || temperatureVal > 60) {
             temperatureVal = station.humidityTemperature;
         }
-        console.log(station.name + " : " + temperatureVal);
         var temperature = document.createElement('h1');
         temperature.innerHTML = temperatureVal + ' <sup>o</sup>C';
         stationInfoWindow.appendChild(temperature);
