@@ -638,29 +638,15 @@ app1.controller('stations', function ($scope, $http) {
                         var infoWindow = new google.maps.InfoWindow({
                             content: getWeatherDataInfoWindow(station)
                         });
+                        var marker = new google.maps.Marker({
+                            position: {lat: Number(station.lat), lng: Number(station.lon)},
+                            map: map,
+                            icon: icons[Number(temperature)]
+                        });
 
-                        if ((station.name !== "Karadiyanaru") && (station.name !== "Koralaipattu")) {
-                            var marker = new google.maps.Marker({
-                                position: {lat: Number(station.lat), lng: Number(station.lon)},
-                                map: map,
-                                icon: icons[Number(temperature)]
-                            });
-
-                            marker.addListener('click', function() {
-                                infoWindow.open(map, marker);
-                            });
-                        } else {
-                            var marker = new google.maps.Marker({
-                                position: {lat: Number(station.lat), lng: Number(station.lon)},
-                                map: map,
-                                icon: '/images/markers/warn.png'
-                            });
-
-                            marker.addListener('click', function() {
-                                infoWindow.open(map, marker);
-                            });
-                        }
-
+                        marker.addListener('click', function() {
+                            infoWindow.open(map, marker);
+                        });
                     }
                 } else {
                     if (station.temp !== null) {

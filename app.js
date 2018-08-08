@@ -374,8 +374,8 @@ function sendWeatherData() {
             var dateData = new Date(stationData.recTime);
             var date = dateData.getDate() + "/" + (dateData.getMonth() + 1);
             message = "Weather Station: " + stationData.name + "\n" +
-                // "Total rainfall for the 24 hours ending 8.30 a.m. on " + date + ": " + rainfall + " mm";
-                "Total rainfall for the 24 hours ending 8.30 a.m. on " + date + ": N/A";
+                "Total rainfall for the 24 hours ending 8.30 a.m. on " + date + ": " + rainfall + " mm";
+                // "Total rainfall for the 24 hours ending 8.30 a.m. on " + date + ": N/A";
         }
 
         var xmlRequest = '<?xml version="1.0" encoding="UTF-8"?>\n' +
