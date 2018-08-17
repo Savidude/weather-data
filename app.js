@@ -367,7 +367,7 @@ function sendWeatherData() {
         var lastRecordedTimeDifference = Date.now() - stationData.recTime;
         var message;
         if (lastRecordedTimeDifference > 3600000) {
-            var date = Date.now().getDate() + "/" + (Date.now().getMonth() + 1);
+            var date = new Date().getDate() + "/" + (new Date().getMonth() + 1);
             message = "Weather Station: " + stationData.name + "\n" +
                 "Total rainfall for the 24 hours ending 8.30 a.m. on " + date + ": N/A";
         } else {
