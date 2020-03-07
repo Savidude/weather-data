@@ -14,7 +14,7 @@
     "hbs": "~4.0.1",
     "json2csv": "^3.11.2",
     "mongodb": "^2.2.31",
-    "morgan": "~1.7.0",
+    "morgan": "~1.9.1",
     "node-schedule-tz": "^1.2.1-4",
     "rand-token": "^0.3.0",
     "request": "^2.87.0",
