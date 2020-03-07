@@ -323,7 +323,7 @@ function sendWeatherData() {
 
                                                             if (recipients.length > 1) {
                                                                 // console.log(JSON.stringify(stationData, null, 2));
-                                                                sendSMSUpdate(stationData);
+                                                                // sendSMSUpdate(stationData);
                                                             }
                                                         }
                                                     });
