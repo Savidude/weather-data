@@ -13,7 +13,7 @@
     "express-session": "^1.15.6",
     "hbs": "~4.0.1",
     "json2csv": "^3.11.2",
-    "mongodb": "^2.2.31",
+    "mongodb": "^3.6.1",
     "morgan": "~1.7.0",
     "node-schedule-tz": "^1.2.1-4",
     "rand-token": "^0.3.0",
